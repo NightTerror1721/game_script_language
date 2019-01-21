@@ -9,6 +9,10 @@ package kp.gsl;
  *
  * @author Asus
  */
-public class Main {
-    
+public final class Main
+{
+    public static void main(String[] args)
+    {
+        
+    }
 }
