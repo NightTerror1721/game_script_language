@@ -9,6 +9,10 @@ import java.util.Arrays;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.Spliterator;
+import java.util.Spliterators;
+import java.util.stream.Stream;
+import java.util.stream.StreamSupport;
 import kp.gsl.exception.NotPointerException;
 import kp.gsl.exception.UnsupportedOperatorException;
 import kp.gsl.lib.Def;
@@ -76,6 +80,12 @@ public class GSLRawBytes extends GSLValue
     public final Map<GSLValue, GSLValue> toMap() { return Utils.arrayToMap(toArray()); }
     
     @Override
+    public final Stream<GSLValue> stream()
+    {
+        return StreamSupport.stream(Spliterators.spliterator(new Iter(), bytes.length, Spliterator.ORDERED | Spliterator.SIZED), false);
+    }
+    
+    @Override
     public final GSLRawBytes cast() { return this; }
     
     @Override
@@ -135,25 +145,36 @@ public class GSLRawBytes extends GSLValue
             case "setInt64": return S_LONG;
             case "setFloat32": return S_FLOAT;
             case "setFloat64": return S_DOUBLE;
+            case "setBEInt16": return S_SHORT_BE;
+            case "setBEInt32": return S_INT_BE;
+            case "setBEInt64": return S_LONG_BE;
+            case "setBEFloat32": return S_FLOAT_BE;
+            case "setBEFloat64": return S_DOUBLE_BE;
+            case "getInt8": case "getByte": return G_BYTE;
+            case "getInt16": return G_SHORT;
+            case "getInt32": return G_INT;
+            case "getInt64": return G_LONG;
+            case "getFloat32": return G_FLOAT;
+            case "getFloat64": return G_DOUBLE;
+            case "getBEInt16": return G_SHORT_BE;
+            case "getBEInt32": return G_INT_BE;
+            case "getBEInt64": return G_LONG_BE;
+            case "getBEFloat32": return G_FLOAT_BE;
+            case "getBEFloat64": return G_DOUBLE_BE;
         }
     }
     @Override public final void operatorSetProperty(String name, GSLValue value) { throw new UnsupportedOperatorException(this, ".="); }
 
     @Override
-    public final GSLValue operatorCall(GSLValue self, GSLValue[] args) { throw new UnsupportedOperatorException(this, "()"); }
+    public final GSLValue operatorCall(GSLValue self, GSLVarargs args) { throw new UnsupportedOperatorException(this, "()"); }
     
     @Override
-    public final GSLValue operatorNew(GSLValue[] args) { throw new UnsupportedOperatorException(this, "new"); }
+    public final GSLValue operatorNew(GSLVarargs args) { throw new UnsupportedOperatorException(this, "new"); }
 
     @Override
     public final GSLValue operatorIterator()
     {
-        return Def.<GSLValue>iterator(new Iterator<>()
-        {
-            private int it;
-            @Override public final boolean hasNext() { return it < bytes.length; }
-            @Override public final GSLValue next() { return new GSLInteger(bytes[it++]); }
-        });
+        return Def.<GSLValue>iterator(new Iter());
     }
     @Override public final boolean hasNext() { throw new UnsupportedOperatorException(this, "hasNext"); }
     @Override public final GSLValue next() { throw new UnsupportedOperatorException(this, "next"); }
@@ -282,29 +303,37 @@ public class GSLRawBytes extends GSLValue
     
     
     
-    private static final GSLValue S_BYTE = Def.<GSLRawBytes>voidMethod((self, args) -> self.setByte(args[0].intValue(), args[1].intValue()));
-    private static final GSLValue S_SHORT = Def.<GSLRawBytes>voidMethod((self, args) -> self.setShort(args[0].intValue(), args[1].intValue()));
-    private static final GSLValue S_INT = Def.<GSLRawBytes>voidMethod((self, args) -> self.setInt(args[0].intValue(), args[1].intValue()));
-    private static final GSLValue S_LONG = Def.<GSLRawBytes>voidMethod((self, args) -> self.setLong(args[0].intValue(), args[1].longValue()));
-    private static final GSLValue S_FLOAT = Def.<GSLRawBytes>voidMethod((self, args) -> self.setFloat(args[0].intValue(), args[1].floatValue()));
-    private static final GSLValue S_DOUBLE = Def.<GSLRawBytes>voidMethod((self, args) -> self.setDouble(args[0].intValue(), args[1].intValue()));
+    private static final GSLValue S_BYTE = Def.<GSLRawBytes>voidMethod((self, args) -> self.setByte(args.arg0().intValue(), args.arg1().intValue()));
+    private static final GSLValue S_SHORT = Def.<GSLRawBytes>voidMethod((self, args) -> self.setShort(args.arg0().intValue(), args.arg1().intValue()));
+    private static final GSLValue S_INT = Def.<GSLRawBytes>voidMethod((self, args) -> self.setInt(args.arg0().intValue(), args.arg1().intValue()));
+    private static final GSLValue S_LONG = Def.<GSLRawBytes>voidMethod((self, args) -> self.setLong(args.arg0().intValue(), args.arg1().longValue()));
+    private static final GSLValue S_FLOAT = Def.<GSLRawBytes>voidMethod((self, args) -> self.setFloat(args.arg0().intValue(), args.arg1().floatValue()));
+    private static final GSLValue S_DOUBLE = Def.<GSLRawBytes>voidMethod((self, args) -> self.setDouble(args.arg0().intValue(), args.arg1().intValue()));
     
-    private static final GSLValue S_SHORT_BE = Def.<GSLRawBytes>voidMethod((self, args) -> self.setShortBE(args[0].intValue(), args[1].intValue()));
-    private static final GSLValue S_INT_BE = Def.<GSLRawBytes>voidMethod((self, args) -> self.setIntBE(args[0].intValue(), args[1].intValue()));
-    private static final GSLValue S_LONG_BE = Def.<GSLRawBytes>voidMethod((self, args) -> self.setLongBE(args[0].intValue(), args[1].longValue()));
-    private static final GSLValue S_FLOAT_BE = Def.<GSLRawBytes>voidMethod((self, args) -> self.setFloatBE(args[0].intValue(), args[1].floatValue()));
-    private static final GSLValue S_DOUBLE_BE = Def.<GSLRawBytes>voidMethod((self, args) -> self.setDoubleBE(args[0].intValue(), args[1].intValue()));
+    private static final GSLValue S_SHORT_BE = Def.<GSLRawBytes>voidMethod((self, args) -> self.setShortBE(args.arg0().intValue(), args.arg1().intValue()));
+    private static final GSLValue S_INT_BE = Def.<GSLRawBytes>voidMethod((self, args) -> self.setIntBE(args.arg0().intValue(), args.arg1().intValue()));
+    private static final GSLValue S_LONG_BE = Def.<GSLRawBytes>voidMethod((self, args) -> self.setLongBE(args.arg0().intValue(), args.arg1().longValue()));
+    private static final GSLValue S_FLOAT_BE = Def.<GSLRawBytes>voidMethod((self, args) -> self.setFloatBE(args.arg0().intValue(), args.arg1().floatValue()));
+    private static final GSLValue S_DOUBLE_BE = Def.<GSLRawBytes>voidMethod((self, args) -> self.setDoubleBE(args.arg0().intValue(), args.arg1().intValue()));
     
-    private static final GSLValue G_BYTE = Def.<GSLRawBytes>method((self, args) -> new GSLInteger(self.getByte(args[0].intValue())));
-    private static final GSLValue G_SHORT = Def.<GSLRawBytes>method((self, args) -> new GSLInteger(self.getShort(args[0].intValue())));
-    private static final GSLValue G_INT = Def.<GSLRawBytes>method((self, args) -> new GSLInteger(self.getInt(args[0].intValue())));
-    private static final GSLValue G_LONG = Def.<GSLRawBytes>method((self, args) -> new GSLInteger(self.getLong(args[0].intValue())));
-    private static final GSLValue G_FLOAT = Def.<GSLRawBytes>method((self, args) -> new GSLFloat(self.getFloat(args[0].intValue())));
-    private static final GSLValue G_DOUBLE = Def.<GSLRawBytes>method((self, args) -> new GSLFloat(self.getDouble(args[0].intValue())));
+    private static final GSLValue G_BYTE = Def.<GSLRawBytes>method((self, args) -> new GSLInteger(self.getByte(args.arg0().intValue())));
+    private static final GSLValue G_SHORT = Def.<GSLRawBytes>method((self, args) -> new GSLInteger(self.getShort(args.arg0().intValue())));
+    private static final GSLValue G_INT = Def.<GSLRawBytes>method((self, args) -> new GSLInteger(self.getInt(args.arg0().intValue())));
+    private static final GSLValue G_LONG = Def.<GSLRawBytes>method((self, args) -> new GSLInteger(self.getLong(args.arg0().intValue())));
+    private static final GSLValue G_FLOAT = Def.<GSLRawBytes>method((self, args) -> new GSLFloat(self.getFloat(args.arg0().intValue())));
+    private static final GSLValue G_DOUBLE = Def.<GSLRawBytes>method((self, args) -> new GSLFloat(self.getDouble(args.arg0().intValue())));
     
-    private static final GSLValue G_SHORT_BE = Def.<GSLRawBytes>method((self, args) -> new GSLInteger(self.getShortBE(args[0].intValue())));
-    private static final GSLValue G_INT_BE = Def.<GSLRawBytes>method((self, args) -> new GSLInteger(self.getIntBE(args[0].intValue())));
-    private static final GSLValue G_LONG_BE = Def.<GSLRawBytes>method((self, args) -> new GSLInteger(self.getLongBE(args[0].intValue())));
-    private static final GSLValue G_FLOAT_BE = Def.<GSLRawBytes>method((self, args) -> new GSLFloat(self.getFloatBE(args[0].intValue())));
-    private static final GSLValue G_DOUBLE_BE = Def.<GSLRawBytes>method((self, args) -> new GSLFloat(self.getDoubleBE(args[0].intValue())));
+    private static final GSLValue G_SHORT_BE = Def.<GSLRawBytes>method((self, args) -> new GSLInteger(self.getShortBE(args.arg0().intValue())));
+    private static final GSLValue G_INT_BE = Def.<GSLRawBytes>method((self, args) -> new GSLInteger(self.getIntBE(args.arg0().intValue())));
+    private static final GSLValue G_LONG_BE = Def.<GSLRawBytes>method((self, args) -> new GSLInteger(self.getLongBE(args.arg0().intValue())));
+    private static final GSLValue G_FLOAT_BE = Def.<GSLRawBytes>method((self, args) -> new GSLFloat(self.getFloatBE(args.arg0().intValue())));
+    private static final GSLValue G_DOUBLE_BE = Def.<GSLRawBytes>method((self, args) -> new GSLFloat(self.getDoubleBE(args.arg0().intValue())));
+    
+    
+    private final class Iter implements Iterator<GSLValue>
+    {
+        private int it;
+        @Override public final boolean hasNext() { return it < bytes.length; }
+        @Override public final GSLValue next() { return new GSLInteger(bytes[it++]); }
+    }
 }

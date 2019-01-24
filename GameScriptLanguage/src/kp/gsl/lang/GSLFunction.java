@@ -7,6 +7,7 @@ package kp.gsl.lang;
 
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Stream;
 import kp.gsl.exception.GSLRuntimeException;
 import kp.gsl.exception.UnsupportedOperatorException;
 import kp.gsl.lib.Def;
@@ -51,6 +52,9 @@ public abstract class GSLFunction extends GSLImmutableValue
     public final Map<GSLValue, GSLValue> toMap() { return Utils.mapOf(this); }
     
     @Override
+    public final Stream<GSLValue> stream() { return Stream.of(this); }
+    
+    @Override
     public final GSLFunction cast() { return this; }
 
     @Override public final GSLValue operatorEquals(GSLValue value) { return this == value ? TRUE : FALSE; }
@@ -92,10 +96,10 @@ public abstract class GSLFunction extends GSLImmutableValue
     }
 
     @Override
-    public abstract GSLValue operatorCall(GSLValue self, GSLValue[] args);
+    public abstract GSLValue operatorCall(GSLValue self, GSLVarargs args);
     
     @Override
-    public final GSLValue operatorNew(GSLValue[] args) { throw new UnsupportedOperatorException(this, "new"); }
+    public final GSLValue operatorNew(GSLVarargs args) { throw new UnsupportedOperatorException(this, "new"); }
 
     @Override
     public final GSLValue operatorIterator() { return Utils.oneIter(this); }
@@ -107,16 +111,14 @@ public abstract class GSLFunction extends GSLImmutableValue
     
     
     private static final GSLFunction CALL = Def.<GSLFunction>method((self, args) -> {
-        if(args.length < 1)
+        if(args.numberOfArguments() < 1)
             throw new GSLRuntimeException("Expected minimun 1 argument");
-        var nargs = new GSLValue[args.length - 1];
-        System.arraycopy(args, 1, nargs, 0, nargs.length);
-        return self.operatorCall(args[0], nargs);
+        return self.operatorCall(args.arg0(), subVarargs(args, 1));
     });
     
     private static final GSLFunction APPLY = Def.<GSLFunction>method((self, args) -> {
-        if(args.length < 1)
+        if(args.numberOfArguments() < 1)
             throw new GSLRuntimeException("Expected minimun 1 argument");
-        return self.operatorCall(args[0], args[1].toArray());
+        return self.operatorCall(args.arg0(), subVarargs(args, 1));
     });
 }

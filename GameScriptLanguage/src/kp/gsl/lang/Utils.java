@@ -6,10 +6,14 @@
 package kp.gsl.lang;
 
 import java.util.Collection;
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.function.Function;
+import java.util.stream.Collector;
+import java.util.stream.Collectors;
 
 /**
  *
@@ -73,6 +77,22 @@ final class Utils
     
     public static final GSLValue[] mapToArray(Map<GSLValue, GSLValue> map)
     {
-        
+        return map.entrySet().stream().map(e -> new GSLTuple(new GSLValue[] { e.getKey(), e.getValue() }, true)).toArray(GSLValue[]::new);
+    }
+    
+    public static final List<GSLValue> mapToList(Map<GSLValue, GSLValue> map)
+    {
+        return map.entrySet().stream().map(e -> new GSLTuple(new GSLValue[] { e.getKey(), e.getValue() }, true)).collect(Collectors.toList());
+    }
+    
+    public static final <T, K, U>
+    Collector<T, ?, LinkedHashMap<K, U>> linkedHashMapCollector(Function<? super T, ? extends K> keyMapper, Function<? super T, ? extends U> valueMapper)
+    {
+        return Collectors.toMap(keyMapper, valueMapper, (v0, v1) -> v1, LinkedHashMap::new);
+    }
+    
+    public static final Comparator<GSLValue> defaultComparator(final GSLValue comparator)
+    {
+        return (v0, v1) -> comparator.operatorCall(GSLValue.NULL, new GSLVarargs.Pair(v0, v1)).intValue();
     }
 }

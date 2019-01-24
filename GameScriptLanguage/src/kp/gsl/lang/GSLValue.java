@@ -7,18 +7,20 @@ package kp.gsl.lang;
 
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Stream;
 
 /**
  *
  * @author Asus
  */
-public abstract class GSLValue
+public abstract class GSLValue extends GSLVarargs
 {
     public abstract GSLDataType getGSLDataType();
     
     public final boolean isNull() { return getGSLDataType() == GSLDataType.NULL; }
     public final boolean isInteger() { return getGSLDataType() == GSLDataType.INTEGER; }
     public final boolean isFloat() { return getGSLDataType() == GSLDataType.FLOAT; }
+    public final boolean isNumber() { return getGSLDataType().isNumber(); }
     public final boolean isBoolean() { return getGSLDataType() == GSLDataType.BOOLEAN; }
     public final boolean isString() { return getGSLDataType() == GSLDataType.STRING; }
     public final boolean isVector() { return getGSLDataType() == GSLDataType.VECTOR; }
@@ -28,7 +30,7 @@ public abstract class GSLValue
     public final boolean isTuple() { return getGSLDataType() == GSLDataType.TUPLE; }
     public final boolean isObject() { return getGSLDataType() == GSLDataType.OBJECT; }
     public final boolean isStruct() { return getGSLDataType() == GSLDataType.STRUCT; }
-    public final boolean isDictionary() { return getGSLDataType() == GSLDataType.DICTIONARY; }
+    public final boolean isBlueprint() { return getGSLDataType() == GSLDataType.BLUEPRINT; }
     public final boolean isIterator() { return getGSLDataType() == GSLDataType.ITERATOR; }
     public final boolean isRawBytes() { return getGSLDataType() == GSLDataType.RAW_BYTES; }
     public final boolean isNative() { return getGSLDataType() == GSLDataType.NATIVE; }
@@ -47,6 +49,7 @@ public abstract class GSLValue
     public abstract GSLValue[] toArray();
     public abstract List<GSLValue> toList();
     public abstract Map<GSLValue, GSLValue> toMap();
+    public abstract Stream<GSLValue> stream();
     public <V extends GSLValue> V cast() { return (V) this; }
     
     
@@ -91,10 +94,18 @@ public abstract class GSLValue
     /* Object operators */
     public abstract GSLValue operatorGetProperty(String name);
     public abstract void     operatorSetProperty(String name, GSLValue value);
-    public abstract GSLValue operatorCall(GSLValue self, GSLValue[] args);
-    public final    GSLValue operatorCall(GSLValue self) { return operatorCall(self, SGSConstants.EMPTY_ARGS); }
-    public abstract GSLValue operatorNew(GSLValue[] args);
-    public final    GSLValue operatorNew() { return operatorNew(SGSConstants.EMPTY_ARGS); }
+    public abstract GSLValue operatorCall(GSLValue self, GSLVarargs args);
+    public final    GSLValue operatorCall(GSLValue self) { return operatorCall(self, NO_ARGS); }
+    public final    GSLValue operatorCall(GSLValue self, GSLValue arg0) { return operatorCall(self, (GSLVarargs) arg0); }
+    public final    GSLValue operatorCall(GSLValue self, GSLValue arg0, GSLValue arg1) { return operatorCall(self, new Pair(arg0, arg1)); }
+    public final    GSLValue operatorCall(GSLValue self, GSLValue arg0, GSLValue arg1, GSLValue arg2) { return operatorCall(self, new Array(arg0, arg1, arg2)); }
+    public final    GSLValue operatorCall(GSLValue self, GSLValue arg0, GSLValue arg1, GSLValue arg2, GSLValue arg3) { return operatorCall(self, new Array(arg0, arg1, arg2, arg3)); }
+    public abstract GSLValue operatorNew(GSLVarargs args);
+    public final    GSLValue operatorNew() { return operatorNew(NO_ARGS); }
+    public final    GSLValue operatorNew(GSLValue self, GSLValue arg0) { return operatorNew((GSLVarargs) arg0); }
+    public final    GSLValue operatorNew(GSLValue self, GSLValue arg0, GSLValue arg1) { return operatorNew(new Pair(arg0, arg1)); }
+    public final    GSLValue operatorNew(GSLValue self, GSLValue arg0, GSLValue arg1, GSLValue arg2) { return operatorNew(new Array(arg0, arg1, arg2)); }
+    public final    GSLValue operatorNew(GSLValue self, GSLValue arg0, GSLValue arg1, GSLValue arg2, GSLValue arg3) { return operatorNew(new Array(arg0, arg1, arg2, arg3)); }
     
     
     /* Pointer operators */
@@ -127,6 +138,12 @@ public abstract class GSLValue
             return TRUE;
         return operatorNotEquals(value);
     }
+    
+    
+    @Override public final int numberOfArguments() { return 1; }
+    @Override public final GSLValue arg0() { return this; }
+    @Override public final GSLValue arg1() { return NULL; }
+    @Override public final GSLValue arg(int index) { return index == 0 ? this : NULL; }
     
     
     

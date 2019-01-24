@@ -7,6 +7,7 @@ package kp.gsl.lang;
 
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Stream;
 import kp.gsl.exception.UnsupportedOperatorException;
 
 /**
@@ -53,6 +54,9 @@ public final class GSLFloat extends GSLImmutableValue
     public final Map<GSLValue, GSLValue> toMap() { return Utils.mapOf(this); }
     
     @Override
+    public final Stream<GSLValue> stream() { return Stream.of(this); }
+    
+    @Override
     public final GSLFloat cast() { return this; }
 
     @Override public final GSLValue operatorEquals(GSLValue value) { return number == value.doubleValue() ? TRUE : FALSE; }
@@ -94,10 +98,10 @@ public final class GSLFloat extends GSLImmutableValue
     }
 
     @Override
-    public final GSLValue operatorCall(GSLValue self, GSLValue[] args) { throw new UnsupportedOperatorException(this, "()"); }
+    public final GSLValue operatorCall(GSLValue self, GSLVarargs args) { throw new UnsupportedOperatorException(this, "()"); }
     
     @Override
-    public final GSLValue operatorNew(GSLValue[] args) { throw new UnsupportedOperatorException(this, "new"); }
+    public final GSLValue operatorNew(GSLVarargs args) { throw new UnsupportedOperatorException(this, "new"); }
 
     @Override
     public final GSLValue operatorIterator() { return Utils.oneIter(this); }

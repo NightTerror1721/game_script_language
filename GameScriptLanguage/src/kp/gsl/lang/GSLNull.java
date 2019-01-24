@@ -7,6 +7,7 @@ package kp.gsl.lang;
 
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Stream;
 import kp.gsl.exception.UnsupportedOperatorException;
 
 /**
@@ -53,6 +54,9 @@ public final class GSLNull extends GSLImmutableValue
     public final Map<GSLValue, GSLValue> toMap() { return Utils.mapOf(this); }
     
     @Override
+    public final Stream<GSLValue> stream() { return Stream.of(this); }
+    
+    @Override
     public final GSLNull cast() { return this; }
 
     @Override public final GSLValue operatorEquals(GSLValue value) { return this == value ? TRUE : FALSE; }
@@ -73,8 +77,8 @@ public final class GSLNull extends GSLImmutableValue
     @Override public final GSLValue operatorDecrease() { throw new UnsupportedOperatorException(this, "--"); }
     @Override public final GSLValue operatorNegative() { throw new UnsupportedOperatorException(this, "-()"); }
 
-    @Override public final GSLValue operatorBitwiseShiftLeft(GSLValue value) { throw new UnsupportedOperatorException(this, ">>"); }
-    @Override public final GSLValue operatorBitwiseShiftRight(GSLValue value) { throw new UnsupportedOperatorException(this, "<<"); }
+    @Override public final GSLValue operatorBitwiseShiftLeft(GSLValue value) { throw new UnsupportedOperatorException(this, "<<"); }
+    @Override public final GSLValue operatorBitwiseShiftRight(GSLValue value) { throw new UnsupportedOperatorException(this, ">>"); }
     @Override public final GSLValue operatorBitwiseAnd(GSLValue value) { throw new UnsupportedOperatorException(this, "&"); }
     @Override public final GSLValue operatorBitwiseOr(GSLValue value) { throw new UnsupportedOperatorException(this, "|"); }
     @Override public final GSLValue operatorBitwiseXor(GSLValue value) { throw new UnsupportedOperatorException(this, "^"); }
@@ -86,10 +90,10 @@ public final class GSLNull extends GSLImmutableValue
     public GSLValue operatorGetProperty(String name) { throw new UnsupportedOperatorException(this, "."); }
 
     @Override
-    public final GSLValue operatorCall(GSLValue self, GSLValue[] args) { throw new UnsupportedOperatorException(this, "()"); }
+    public final GSLValue operatorCall(GSLValue self, GSLVarargs args) { throw new UnsupportedOperatorException(this, "()"); }
     
     @Override
-    public final GSLValue operatorNew(GSLValue[] args) { throw new UnsupportedOperatorException(this, "new"); }
+    public final GSLValue operatorNew(GSLVarargs args) { throw new UnsupportedOperatorException(this, "new"); }
 
     @Override
     public final GSLValue operatorIterator() { return Utils.oneIter(this); }

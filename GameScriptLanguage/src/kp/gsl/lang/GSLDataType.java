@@ -19,7 +19,7 @@ public enum GSLDataType
     BOOLEAN,
     STRING,
     
-    VECTOR,
+    TUPLE,
     TABLE,
     
     FUNCTION,
@@ -27,13 +27,22 @@ public enum GSLDataType
     
     /* MUTABLE VALUES */
     LIST,
-    TUPLE,
+    VECTOR,
     MAP,
     STRUCT,
-    DICTIONARY,
+    BLUEPRINT,
     
     OBJECT,
     ITERATOR,
     RAW_BYTES,
     NATIVE;
+    
+    public final boolean isNumber()
+    {
+        switch(this)
+        {
+            case INTEGER: case FLOAT: return true;
+            default: return false;
+        }
+    }
 }

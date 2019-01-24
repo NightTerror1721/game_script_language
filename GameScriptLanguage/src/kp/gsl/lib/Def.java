@@ -10,9 +10,15 @@ import java.util.Objects;
 import java.util.function.BiConsumer;
 import java.util.function.BiFunction;
 import java.util.function.Consumer;
+import java.util.function.ToDoubleBiFunction;
+import java.util.function.ToLongBiFunction;
+import kp.gsl.lang.GSLFloat;
 import kp.gsl.lang.GSLFunction;
+import kp.gsl.lang.GSLInteger;
 import kp.gsl.lang.GSLIterator;
+import kp.gsl.lang.GSLString;
 import kp.gsl.lang.GSLValue;
+import kp.gsl.lang.GSLVarargs;
 
 /**
  *
@@ -22,26 +28,30 @@ public final class Def
 {
     private Def() {}
     
-    public static final GSLFunction voidFunction(Consumer<GSLValue[]> function) { return new VoidFunction(function); }
-    public static final GSLFunction function(java.util.function.Function<GSLValue[], GSLValue> function) { return new Function(function); }
+    public static final GSLFunction voidFunction(Consumer<GSLVarargs> function) { return new VoidFunction(function); }
+    public static final GSLFunction function(java.util.function.Function<GSLVarargs, GSLValue> function) { return new Function(function); }
     
-    public static final <SV extends GSLValue> GSLFunction voidMethod(BiConsumer<SV, GSLValue[]> method) { return new VoidMethod<>(method); }
-    public static final <SV extends GSLValue> GSLFunction method(BiFunction<SV, GSLValue[], GSLValue> method) { return new Method<>(method); }
+    public static final <SV extends GSLValue> GSLFunction voidMethod(BiConsumer<SV, GSLVarargs> method) { return new VoidMethod<>(method); }
+    public static final <SV extends GSLValue> GSLFunction method(BiFunction<SV, GSLVarargs, GSLValue> method) { return new Method<>(method); }
+    public static final <SV extends GSLValue> GSLFunction boolMethod(BoolMethodClosure<SV> method) { return new BoolMethod<>(method); }
+    public static final <SV extends GSLValue> GSLFunction intMethod(ToLongBiFunction<SV, GSLVarargs> method) { return new IntMethod<>(method); }
+    public static final <SV extends GSLValue> GSLFunction floatMethod(ToDoubleBiFunction<SV, GSLVarargs> method) { return new FloatMethod<>(method); }
+    public static final <SV extends GSLValue> GSLFunction stringMethod(BiFunction<SV, GSLVarargs, String> method) { return new StringMethod<>(method); }
     
     public static final <V extends GSLValue> GSLIterator iterator(Iterator<V> iterator) { return new DefaultIterator(iterator); }
     
     
     private static final class VoidFunction extends GSLFunction
     {
-        private final Consumer<GSLValue[]> function;
+        private final Consumer<GSLVarargs> function;
         
-        private VoidFunction(Consumer<GSLValue[]> function)
+        private VoidFunction(Consumer<GSLVarargs> function)
         {
             this.function = Objects.requireNonNull(function);
         }
 
         @Override
-        public final GSLValue operatorCall(GSLValue self, GSLValue[] args)
+        public final GSLValue operatorCall(GSLValue self, GSLVarargs args)
         {
             function.accept(args);
             return NULL;
@@ -50,15 +60,15 @@ public final class Def
     
     private static final class Function extends GSLFunction
     {
-        private final java.util.function.Function<GSLValue[], GSLValue> function;
+        private final java.util.function.Function<GSLVarargs, GSLValue> function;
         
-        private Function(java.util.function.Function<GSLValue[], GSLValue> function)
+        private Function(java.util.function.Function<GSLVarargs, GSLValue> function)
         {
             this.function = Objects.requireNonNull(function);
         }
 
         @Override
-        public final GSLValue operatorCall(GSLValue self, GSLValue[] args)
+        public final GSLValue operatorCall(GSLValue self, GSLVarargs args)
         {
             return function.apply(args);
         }
@@ -66,15 +76,15 @@ public final class Def
     
     private static final class VoidMethod<SV extends GSLValue> extends GSLFunction
     {
-        private final BiConsumer<SV, GSLValue[]> method;
+        private final BiConsumer<SV, GSLVarargs> method;
         
-        private VoidMethod(BiConsumer<SV, GSLValue[]> method)
+        private VoidMethod(BiConsumer<SV, GSLVarargs> method)
         {
             this.method = Objects.requireNonNull(method);
         }
 
         @Override
-        public final GSLValue operatorCall(GSLValue self, GSLValue[] args)
+        public final GSLValue operatorCall(GSLValue self, GSLVarargs args)
         {
             method.accept(self.cast(), args);
             return NULL;
@@ -83,17 +93,83 @@ public final class Def
     
     private static final class Method<SV extends GSLValue> extends GSLFunction
     {
-        private final BiFunction<SV, GSLValue[], GSLValue> method;
+        private final BiFunction<SV, GSLVarargs, GSLValue> method;
         
-        private Method(BiFunction<SV, GSLValue[], GSLValue> method)
+        private Method(BiFunction<SV, GSLVarargs, GSLValue> method)
         {
             this.method = Objects.requireNonNull(method);
         }
 
         @Override
-        public final GSLValue operatorCall(GSLValue self, GSLValue[] args)
+        public final GSLValue operatorCall(GSLValue self, GSLVarargs args)
         {
             return method.apply(self.cast(), args);
+        }
+    }
+    
+    private static final class BoolMethod<SV extends GSLValue> extends GSLFunction
+    {
+        private final BoolMethodClosure<SV> method;
+        
+        private BoolMethod(BoolMethodClosure<SV> method)
+        {
+            this.method = Objects.requireNonNull(method);
+        }
+
+        @Override
+        public final GSLValue operatorCall(GSLValue self, GSLVarargs args)
+        {
+            return method.applyAsBool(self.cast(), args) ? TRUE : FALSE;
+        }
+    }
+    @FunctionalInterface
+    public static interface BoolMethodClosure<SV extends GSLValue> { boolean applyAsBool(SV self, GSLVarargs args); }
+    
+    private static final class IntMethod<SV extends GSLValue> extends GSLFunction
+    {
+        private final ToLongBiFunction<SV, GSLVarargs> method;
+        
+        private IntMethod(ToLongBiFunction<SV, GSLVarargs> method)
+        {
+            this.method = Objects.requireNonNull(method);
+        }
+
+        @Override
+        public final GSLValue operatorCall(GSLValue self, GSLVarargs args)
+        {
+            return new GSLInteger(method.applyAsLong(self.cast(), args));
+        }
+    }
+    
+    private static final class FloatMethod<SV extends GSLValue> extends GSLFunction
+    {
+        private final ToDoubleBiFunction<SV, GSLVarargs> method;
+        
+        private FloatMethod(ToDoubleBiFunction<SV, GSLVarargs> method)
+        {
+            this.method = Objects.requireNonNull(method);
+        }
+
+        @Override
+        public final GSLValue operatorCall(GSLValue self, GSLVarargs args)
+        {
+            return new GSLFloat(method.applyAsDouble(self.cast(), args));
+        }
+    }
+    
+    private static final class StringMethod<SV extends GSLValue> extends GSLFunction
+    {
+        private final BiFunction<SV, GSLVarargs, String> method;
+        
+        private StringMethod(BiFunction<SV, GSLVarargs, String> method)
+        {
+            this.method = Objects.requireNonNull(method);
+        }
+
+        @Override
+        public final GSLValue operatorCall(GSLValue self, GSLVarargs args)
+        {
+            return new GSLString(method.apply(self.cast(), args));
         }
     }
     

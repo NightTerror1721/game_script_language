@@ -5,8 +5,14 @@
  */
 package kp.gsl.lang;
 
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.Spliterator;
+import java.util.Spliterators;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
+import java.util.stream.StreamSupport;
 import kp.gsl.exception.NotPointerException;
 import kp.gsl.exception.UnsupportedOperatorException;
 import kp.gsl.lib.Def;
@@ -15,7 +21,7 @@ import kp.gsl.lib.Def;
  *
  * @author Asus
  */
-public abstract class GSLIterator extends GSLValue
+public abstract class GSLIterator extends GSLValue implements Iterator<GSLValue>
 {
     @Override
     public final GSLDataType getGSLDataType() { return GSLDataType.ITERATOR; }
@@ -45,13 +51,23 @@ public abstract class GSLIterator extends GSLValue
     public final String toString() { return "iterator::" + superHashCode(); }
 
     @Override
-    public final GSLValue[] toArray() { return Utils.arrayOf(this); }
+    public final GSLValue[] toArray() { return stream().toArray(GSLValue[]::new); }
 
     @Override
-    public final List<GSLValue> toList() { return Utils.listOf(this); }
+    public final List<GSLValue> toList() { return stream().collect(Collectors.toList()); }
 
     @Override
-    public final Map<GSLValue, GSLValue> toMap() { return Utils.mapOf(this); }
+    public final Map<GSLValue, GSLValue> toMap()
+    {
+        return Utils.collectionToMap(toList());
+    }
+    
+    @Override
+    public final Stream<GSLValue> stream()
+    {
+        
+        return StreamSupport.stream(Spliterators.spliteratorUnknownSize(this, Spliterator.ORDERED), false);
+    }
     
     @Override
     public final GSLIterator cast() { return this; }
@@ -97,13 +113,13 @@ public abstract class GSLIterator extends GSLValue
     @Override public final void operatorSetProperty(String name, GSLValue value) { throw new UnsupportedOperatorException(this, ".="); }
 
     @Override
-    public final GSLValue operatorCall(GSLValue self, GSLValue[] args)
+    public final GSLValue operatorCall(GSLValue self, GSLVarargs args)
     {
         return null;
     }
     
     @Override
-    public final GSLValue operatorNew(GSLValue[] args) { throw new UnsupportedOperatorException(this, "new"); }
+    public final GSLValue operatorNew(GSLVarargs args) { throw new UnsupportedOperatorException(this, "new"); }
     
     @Override public final GSLValue operatorReferenceGet() { throw new NotPointerException(this); }
     @Override public final void     operatorReferenceSet(GSLValue value) { throw new NotPointerException(this); }
