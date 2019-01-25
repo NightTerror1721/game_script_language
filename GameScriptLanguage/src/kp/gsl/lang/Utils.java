@@ -77,12 +77,12 @@ final class Utils
     
     public static final GSLValue[] mapToArray(Map<GSLValue, GSLValue> map)
     {
-        return map.entrySet().stream().map(e -> new GSLTuple(new GSLValue[] { e.getKey(), e.getValue() }, true)).toArray(GSLValue[]::new);
+        return map.entrySet().stream().map(e -> new GSLTuple(new GSLValue[] { e.getKey(), e.getValue() })).toArray(GSLValue[]::new);
     }
     
     public static final List<GSLValue> mapToList(Map<GSLValue, GSLValue> map)
     {
-        return map.entrySet().stream().map(e -> new GSLTuple(new GSLValue[] { e.getKey(), e.getValue() }, true)).collect(Collectors.toList());
+        return map.entrySet().stream().map(e -> new GSLTuple(new GSLValue[] { e.getKey(), e.getValue() })).collect(Collectors.toList());
     }
     
     public static final <T, K, U>

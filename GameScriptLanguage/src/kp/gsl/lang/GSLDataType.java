@@ -19,15 +19,15 @@ public enum GSLDataType
     BOOLEAN,
     STRING,
     
-    TUPLE,
-    TABLE,
+    CONST_TUPLE,
+    CONST_MAP,
     
     FUNCTION,
     
     
     /* MUTABLE VALUES */
     LIST,
-    VECTOR,
+    TUPLE,
     MAP,
     STRUCT,
     BLUEPRINT,

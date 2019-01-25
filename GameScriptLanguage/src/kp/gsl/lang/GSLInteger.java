@@ -114,6 +114,8 @@ public final class GSLInteger extends GSLImmutableValue
             return number == ((GSLInteger) o).number;
         if(o instanceof GSLFloat)
             return number == ((GSLFloat) o).number;
+        if(o instanceof GSLBoolean)
+            return number == ((GSLBoolean) o).doubleValue();
         return false;
     }
     @Override public final int hashCode() { return Long.hashCode(number); }

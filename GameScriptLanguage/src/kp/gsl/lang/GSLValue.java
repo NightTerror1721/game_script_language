@@ -5,9 +5,13 @@
  */
 package kp.gsl.lang;
 
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Stream;
+import kp.gsl.lib.Def;
 
 /**
  *
@@ -23,8 +27,8 @@ public abstract class GSLValue extends GSLVarargs
     public final boolean isNumber() { return getGSLDataType().isNumber(); }
     public final boolean isBoolean() { return getGSLDataType() == GSLDataType.BOOLEAN; }
     public final boolean isString() { return getGSLDataType() == GSLDataType.STRING; }
-    public final boolean isVector() { return getGSLDataType() == GSLDataType.VECTOR; }
-    public final boolean isTable() { return getGSLDataType() == GSLDataType.TABLE; }
+    public final boolean isConstTuple() { return getGSLDataType() == GSLDataType.CONST_TUPLE; }
+    public final boolean isConstMap() { return getGSLDataType() == GSLDataType.CONST_MAP; }
     public final boolean isFunction() { return getGSLDataType() == GSLDataType.FUNCTION; }
     public final boolean isList() { return getGSLDataType() == GSLDataType.LIST; }
     public final boolean isTuple() { return getGSLDataType() == GSLDataType.TUPLE; }
@@ -94,6 +98,7 @@ public abstract class GSLValue extends GSLVarargs
     /* Object operators */
     public abstract GSLValue operatorGetProperty(String name);
     public abstract void     operatorSetProperty(String name, GSLValue value);
+    public abstract void     operatorDelProperty(String name);
     public abstract GSLValue operatorCall(GSLValue self, GSLVarargs args);
     public final    GSLValue operatorCall(GSLValue self) { return operatorCall(self, NO_ARGS); }
     public final    GSLValue operatorCall(GSLValue self, GSLValue arg0) { return operatorCall(self, (GSLVarargs) arg0); }
@@ -153,5 +158,91 @@ public abstract class GSLValue extends GSLVarargs
     public static final GSLImmutableValue MINUSONE = new GSLInteger(-1);
     public static final GSLImmutableValue TRUE = GSLBoolean.TRUE_INSTANCE;
     public static final GSLImmutableValue FALSE = GSLBoolean.FALSE_INSTANCE;
+    public static final GSLImmutableValue EMPTY_TUPLE = new GSLConstTuple(new GSLImmutableValue[] {});
+    public static final GSLImmutableValue EMPTY_MAP = new GSLConstMap(Collections.emptyMap());
     public static final GSLImmutableValue NULL = GSLNull.INSTANCE;
+    
+    
+    /* ValueOf */
+    
+    public static final GSLValue valueOf(GSLValue value) { return value; }
+    
+    public static final GSLValue valueOf(byte value) { return new GSLInteger(value); }
+    public static final GSLValue valueOf(short value) { return new GSLInteger(value); }
+    public static final GSLValue valueOf(int value) { return new GSLInteger(value); }
+    public static final GSLValue valueOf(long value) { return new GSLInteger(value); }
+    public static final GSLValue valueOf(float value) { return new GSLFloat(value); }
+    public static final GSLValue valueOf(double value) { return new GSLFloat(value); }
+    public static final GSLValue valueOf(char value) { return new GSLInteger(value); }
+    public static final GSLValue valueOf(boolean value) { return value ? TRUE : FALSE; }
+    
+    public static final GSLValue valueOf(Byte value) { return new GSLInteger(value); }
+    public static final GSLValue valueOf(Short value) { return new GSLInteger(value); }
+    public static final GSLValue valueOf(Integer value) { return new GSLInteger(value); }
+    public static final GSLValue valueOf(Long value) { return new GSLInteger(value); }
+    public static final GSLValue valueOf(Float value) { return new GSLFloat(value); }
+    public static final GSLValue valueOf(Double value) { return new GSLFloat(value); }
+    public static final GSLValue valueOf(Character value) { return new GSLInteger(value); }
+    public static final GSLValue valueOf(Boolean value) { return value ? TRUE : FALSE; }
+    
+    public static final GSLValue valueOf(String value) { return new GSLString(value); }
+    
+    
+    public static final GSLValue valueOf(GSLValue[] value) { return new GSLTuple(value); }
+    
+    public static final GSLValue valueOf(byte[] value) { return new GSLRawBytes(value); }
+    public static final GSLValue valueOf(short[] value)
+    {
+        var array = new GSLValue[value.length];
+        for(var i = 0; i < array.length; i++)
+            array[i] = valueOf(value[i]);
+        return valueOf(array);
+    }
+    public static final GSLValue valueOf(int[] value) { return valueOf(Arrays.stream(value).mapToObj(GSLValue::valueOf).toArray(GSLValue[]::new)); }
+    public static final GSLValue valueOf(long[] value) { return valueOf(Arrays.stream(value).mapToObj(GSLValue::valueOf).toArray(GSLValue[]::new)); }
+    public static final GSLValue valueOf(float[] value)
+    {
+        var array = new GSLValue[value.length];
+        for(var i = 0; i < array.length; i++)
+            array[i] = valueOf(value[i]);
+        return valueOf(array);
+    }
+    public static final GSLValue valueOf(double[] value) { return valueOf(Arrays.stream(value).mapToObj(GSLValue::valueOf).toArray(GSLValue[]::new)); }
+    public static final GSLValue valueOf(char[] value)
+    {
+        var array = new GSLValue[value.length];
+        for(var i = 0; i < array.length; i++)
+            array[i] = valueOf(value[i]);
+        return valueOf(array);
+    }
+    public static final GSLValue valueOf(boolean[] value)
+    {
+        var array = new GSLValue[value.length];
+        for(var i = 0; i < array.length; i++)
+            array[i] = valueOf(value[i]);
+        return valueOf(array);
+    }
+    
+    public static final GSLValue valueOf(Byte[] value) { return valueOf(Arrays.stream(value).map(GSLValue::valueOf).toArray(GSLValue[]::new)); }
+    public static final GSLValue valueOf(Short[] value) { return valueOf(Arrays.stream(value).map(GSLValue::valueOf).toArray(GSLValue[]::new)); }
+    public static final GSLValue valueOf(Integer[] value) { return valueOf(Arrays.stream(value).map(GSLValue::valueOf).toArray(GSLValue[]::new)); }
+    public static final GSLValue valueOf(Long[] value) { return valueOf(Arrays.stream(value).map(GSLValue::valueOf).toArray(GSLValue[]::new)); }
+    public static final GSLValue valueOf(Float[] value) { return valueOf(Arrays.stream(value).map(GSLValue::valueOf).toArray(GSLValue[]::new)); }
+    public static final GSLValue valueOf(Double[] value) { return valueOf(Arrays.stream(value).map(GSLValue::valueOf).toArray(GSLValue[]::new)); }
+    public static final GSLValue valueOf(Character[] value) { return valueOf(Arrays.stream(value).map(GSLValue::valueOf).toArray(GSLValue[]::new)); }
+    public static final GSLValue valueOf(Boolean[] value) { return valueOf(Arrays.stream(value).map(GSLValue::valueOf).toArray(GSLValue[]::new)); }
+    
+    public static final GSLValue valueOf(String[] value) { return valueOf(Arrays.stream(value).map(GSLValue::valueOf).toArray(GSLValue[]::new)); }
+    
+    public static final GSLValue valueOf(GSLValue[][] value) { return valueOf(Arrays.stream(value).map(GSLValue::valueOf).toArray(GSLValue[]::new)); }
+    
+    
+    public static final GSLValue valueOf(List<GSLValue> value) { return new GSLList(value); }
+    public static final GSLValue valueOf(List<GSLValue> value, boolean isTuple) { return isTuple ? new GSLTuple(value.toArray(GSLValue[]::new)) : new GSLList(value); }
+    
+    
+    public static final GSLValue valueOf(Map<GSLValue, GSLValue> value) { return new GSLMap(value); }
+    
+    
+    public static final <T extends GSLValue> GSLValue valueOf(Iterator<T> value) { return Def.iterator(value); }
 }

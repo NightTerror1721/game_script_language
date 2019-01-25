@@ -152,7 +152,9 @@ public final class GSLList extends GSLValue
         }
     }
     @Override
-    public void operatorSetProperty(String name, GSLValue value) { throw new UnsupportedOperatorException(this, "[]="); }
+    public void operatorSetProperty(String name, GSLValue value) { throw new UnsupportedOperatorException(this, ".="); }
+    @Override
+    public void operatorDelProperty(String name) { throw new UnsupportedOperatorException(this, "delete"); }
 
     @Override
     public final GSLValue operatorCall(GSLValue self, GSLVarargs args) { throw new UnsupportedOperatorException(this, "()"); }

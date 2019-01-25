@@ -20,6 +20,7 @@ public abstract class GSLImmutableValue extends GSLValue
     @Override public final void operatorSet(int index, GSLValue value) { throw new ImmutableValueException(this); }
     
     @Override public final void operatorSetProperty(String name, GSLValue value) { throw new ImmutableValueException(this); }
+    @Override public final void operatorDelProperty(String name) { throw new ImmutableValueException(this); }
     
     @Override public final GSLValue operatorReferenceGet() { throw new NotPointerException(this); }
     @Override public final void     operatorReferenceSet(GSLValue value) { throw new NotPointerException(this); }

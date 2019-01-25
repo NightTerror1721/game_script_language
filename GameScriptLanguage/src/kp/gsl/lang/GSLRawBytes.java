@@ -164,6 +164,7 @@ public class GSLRawBytes extends GSLValue
         }
     }
     @Override public final void operatorSetProperty(String name, GSLValue value) { throw new UnsupportedOperatorException(this, ".="); }
+    @Override public final void operatorDelProperty(String name) { throw new UnsupportedOperatorException(this, "delete"); }
 
     @Override
     public final GSLValue operatorCall(GSLValue self, GSLVarargs args) { throw new UnsupportedOperatorException(this, "()"); }
