@@ -5,10 +5,13 @@
  */
 package kp.gsl.lang;
 
+import java.util.Collections;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Stream;
 import kp.gsl.exception.UnsupportedOperatorException;
+import kp.gsl.lib.Def;
 
 /**
  *
@@ -17,6 +20,7 @@ import kp.gsl.exception.UnsupportedOperatorException;
 public final class GSLNull extends GSLImmutableValue
 {
     static final GSLNull INSTANCE = new GSLNull();
+    private static final GSLFloat F_ZERO = new GSLFloat(0f);
     
     private GSLNull() {}
     
@@ -58,6 +62,31 @@ public final class GSLNull extends GSLImmutableValue
     
     @Override
     public final GSLNull cast() { return this; }
+    
+    
+    @Override public final GSLInteger    operatorCastInteger() { return ZERO; }
+    @Override public final GSLFloat      operatorCastFloat() { return F_ZERO; }
+    @Override public final GSLBoolean    operatorCastBoolean() { return FALSE; }
+    @Override public final GSLString     operatorCastString() { return EMPTY_STRING; }
+    @Override public final GSLConstTuple operatorCastConstTuple() { return EMPTY_TUPLE; }
+    @Override public final GSLConstMap   operatorCastConstMap() { return EMPTY_MAP; }
+    @Override public final GSLFunction   operatorCastFunction() { return EMPTY_FUNCTION; }
+    @Override public final GSLList       operatorCastList() { return new GSLList(); }
+    @Override public final GSLTuple      operatorCastTuple() { return new GSLTuple(new GSLValue[] {}); }
+    @Override public final GSLMap        operatorCastMap() { return new GSLMap(); }
+    @Override public final GSLStruct     operatorCastStruct() { return new GSLStruct(); }
+    @Override public final GSLBlueprint  operatorCastBlueprint() { return new GSLBlueprint(Collections.emptyMap()); }
+    @Override public final GSLObject     operatorCastObject() { return new GSLObject(); }
+    @Override public final GSLIterator   operatorCastIterator()
+    {
+        return Def.<GSLValue>iterator(new Iterator()
+        {
+            @Override public final boolean hasNext() { return false; }
+            @Override public final GSLValue next() { return NULL; }
+        });
+    }
+    @Override public final GSLRawBytes   operatorCastRawBytes() { return new GSLRawBytes(new byte[] { 0 }); }
+    
 
     @Override public final GSLValue operatorEquals(GSLValue value) { return this == value ? TRUE : FALSE; }
     @Override public final GSLValue operatorNotEquals(GSLValue value) { return this != value ? TRUE : FALSE; }

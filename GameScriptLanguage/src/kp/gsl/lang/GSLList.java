@@ -69,6 +69,24 @@ public final class GSLList extends GSLValue
     @Override
     public final GSLList cast() { return this; }
     
+    
+    @Override public final GSLInteger    operatorCastInteger() { return new GSLInteger(hashCode()); }
+    @Override public final GSLFloat      operatorCastFloat() { return new GSLFloat(hashCode()); }
+    @Override public final GSLBoolean    operatorCastBoolean() { return boolValue() ? TRUE : FALSE; }
+    @Override public final GSLString     operatorCastString() { return new GSLString(toString()); }
+    @Override public final GSLConstTuple operatorCastConstTuple() { return new GSLConstTuple(Utils.toImmutableFromList(list)); }
+    @Override public final GSLConstMap   operatorCastConstMap() { return new GSLConstMap(Utils.listToConstMap(list)); }
+    @Override public final GSLFunction   operatorCastFunction() { return Utils.autoGetter(this); }
+    @Override public final GSLList       operatorCastList() { return this; }
+    @Override public final GSLTuple      operatorCastTuple() { return new GSLTuple(list.toArray(GSLValue[]::new)); }
+    @Override public final GSLMap        operatorCastMap() { return new GSLMap(Utils.collectionToMap(list)); }
+    @Override public final GSLStruct     operatorCastStruct() { return Utils.structOf(this); }
+    @Override public final GSLBlueprint  operatorCastBlueprint() { return Utils.blueprintOf(this); }
+    @Override public final GSLObject     operatorCastObject() { return Utils.objectOf(this); }
+    @Override public final GSLIterator   operatorCastIterator() { return Utils.oneIter(this); }
+    @Override public final GSLRawBytes   operatorCastRawBytes() { return Utils.listToBytes(list); }
+    
+    
     @Override
     public final boolean isMutable() { return true; }
 

@@ -20,6 +20,7 @@ import kp.gsl.exception.NotPointerException;
 import kp.gsl.exception.UnsupportedOperatorException;
 import kp.gsl.lang.AbstractObject.Property;
 import static kp.gsl.lang.GSLValue.NULL;
+import kp.gsl.lib.Def;
 import kp.gsl.lib.ObjectProperties;
 
 /**
@@ -121,6 +122,32 @@ public abstract class AbstractObject<M extends Map<String, Property>> extends GS
     
     @Override
     public final boolean isMutable() { return true; }
+    
+    
+    
+    
+    @Override public final GSLInteger    operatorCastInteger() { return new GSLInteger(longValue()); }
+    @Override public final GSLFloat      operatorCastFloat() { return new GSLFloat(doubleValue()); }
+    @Override public final GSLBoolean    operatorCastBoolean() { return boolValue() ? TRUE : FALSE; }
+    @Override public final GSLString     operatorCastString() { return new GSLString(toString()); }
+    @Override public final GSLConstTuple operatorCastConstTuple() { return new GSLConstTuple(Utils.toImmutable(toArray())); }
+    @Override public final GSLConstMap   operatorCastConstMap() { return new GSLConstMap(Utils.toImmutable(toMap())); }
+    @Override public final GSLFunction   operatorCastFunction() { return Def.method(AbstractObject.this::operatorCall); }
+    @Override public final GSLList       operatorCastList() { return new GSLList(toList()); }
+    @Override public final GSLTuple      operatorCastTuple() { return new GSLTuple(toArray()); }
+    @Override public final GSLMap        operatorCastMap() { return new GSLMap(toMap()); }
+    @Override public final GSLIterator   operatorCastIterator()
+    {
+        return Def.iterator(new Iterator<GSLValue>()
+        {
+            @Override public final boolean hasNext() { return AbstractObject.this.hasNext(); }
+            @Override public final GSLValue next() { return AbstractObject.this.next(); }
+        });
+    }
+    @Override public final GSLRawBytes   operatorCastRawBytes() { return Utils.objToBytes(props); }
+    
+    
+    
 
     @Override public final GSLValue operatorEquals(GSLValue value) { return equals(value) ? TRUE : FALSE; }
     @Override public final GSLValue operatorNotEquals(GSLValue value) { return equals(value) ? FALSE : TRUE; }
@@ -327,7 +354,7 @@ public abstract class AbstractObject<M extends Map<String, Property>> extends GS
         var prop = operatorGetProperty(ObjectProperties.OP_CALL);
         if(prop == NULL)
             throw new UnsupportedOperatorException(this, "()");
-        return prop.operatorCall(this, args);
+        return prop.operatorCall(self, args);
     }
     
     @Override
@@ -404,6 +431,11 @@ public abstract class AbstractObject<M extends Map<String, Property>> extends GS
             this.value = NULL;
         }
         Property(String name) { this(name, false); }
+        Property(String name, boolean frozen, GSLValue value)
+        {
+            this(name, frozen);
+            setValue(value);
+        }
         
         public final String getName() { return name; }
         
@@ -412,7 +444,7 @@ public abstract class AbstractObject<M extends Map<String, Property>> extends GS
         
         public final void setValue(GSLValue value)
         {
-            if(frozen)
+            if(frozen && this.value != NULL)
                 throw new GSLRuntimeException("Struct field " + name + " is frozen");
             this.value = value == null ? NULL : value;
         }

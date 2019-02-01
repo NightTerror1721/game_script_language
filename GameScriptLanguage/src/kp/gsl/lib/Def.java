@@ -11,7 +11,9 @@ import java.util.function.BiConsumer;
 import java.util.function.BiFunction;
 import java.util.function.Consumer;
 import java.util.function.ToDoubleBiFunction;
+import java.util.function.ToDoubleFunction;
 import java.util.function.ToLongBiFunction;
+import java.util.function.ToLongFunction;
 import kp.gsl.lang.GSLFloat;
 import kp.gsl.lang.GSLFunction;
 import kp.gsl.lang.GSLInteger;
@@ -30,6 +32,10 @@ public final class Def
     
     public static final GSLFunction voidFunction(Consumer<GSLVarargs> function) { return new VoidFunction(function); }
     public static final GSLFunction function(java.util.function.Function<GSLVarargs, GSLValue> function) { return new Function(function); }
+    public static final GSLFunction boolFunction(BoolFunctionClosure function) { return new BoolFunction(function); }
+    public static final GSLFunction intFunction(ToLongFunction<GSLVarargs> function) { return new IntFunction(function); }
+    public static final GSLFunction floatFunction(ToDoubleFunction<GSLVarargs> function) { return new FloatFunction(function); }
+    public static final GSLFunction stringFunction(java.util.function.Function<GSLVarargs, String> function) { return new StringFunction(function); }
     
     public static final <SV extends GSLValue> GSLFunction voidMethod(BiConsumer<SV, GSLVarargs> method) { return new VoidMethod<>(method); }
     public static final <SV extends GSLValue> GSLFunction method(BiFunction<SV, GSLVarargs, GSLValue> method) { return new Method<>(method); }
@@ -71,6 +77,72 @@ public final class Def
         public final GSLValue operatorCall(GSLValue self, GSLVarargs args)
         {
             return function.apply(args);
+        }
+    }
+    
+    private static final class BoolFunction extends GSLFunction
+    {
+        private final BoolFunctionClosure function;
+        
+        private BoolFunction(BoolFunctionClosure function)
+        {
+            this.function = Objects.requireNonNull(function);
+        }
+
+        @Override
+        public final GSLValue operatorCall(GSLValue self, GSLVarargs args)
+        {
+            return function.applyAsBool(args) ? TRUE : FALSE;
+        }
+    }
+    @FunctionalInterface
+    public static interface BoolFunctionClosure { boolean applyAsBool(GSLVarargs args); }
+    
+    private static final class IntFunction extends GSLFunction
+    {
+        private final ToLongFunction<GSLVarargs> function;
+        
+        private IntFunction(ToLongFunction<GSLVarargs> function)
+        {
+            this.function = Objects.requireNonNull(function);
+        }
+
+        @Override
+        public final GSLValue operatorCall(GSLValue self, GSLVarargs args)
+        {
+            return new GSLInteger(function.applyAsLong(args));
+        }
+    }
+    
+    private static final class FloatFunction extends GSLFunction
+    {
+        private final ToDoubleFunction<GSLVarargs> function;
+        
+        private FloatFunction(ToDoubleFunction<GSLVarargs> function)
+        {
+            this.function = Objects.requireNonNull(function);
+        }
+
+        @Override
+        public final GSLValue operatorCall(GSLValue self, GSLVarargs args)
+        {
+            return new GSLFloat(function.applyAsDouble(args));
+        }
+    }
+    
+    private static final class StringFunction extends GSLFunction
+    {
+        private final java.util.function.Function<GSLVarargs, String> function;
+        
+        private StringFunction(java.util.function.Function<GSLVarargs, String> function)
+        {
+            this.function = Objects.requireNonNull(function);
+        }
+
+        @Override
+        public final GSLValue operatorCall(GSLValue self, GSLVarargs args)
+        {
+            return new GSLString(function.apply(args));
         }
     }
     

@@ -28,4 +28,8 @@ public final class GSLObject extends AbstractObject<Map<String, Property>>
     
     @Override
     public final GSLObject cast() { return this; }
+    
+    @Override public final GSLStruct     operatorCastStruct() { return Utils.structOf(this); }
+    @Override public final GSLBlueprint  operatorCastBlueprint() { return Utils.blueprintOf(this); }
+    @Override public final GSLObject     operatorCastObject() { return this; }
 }

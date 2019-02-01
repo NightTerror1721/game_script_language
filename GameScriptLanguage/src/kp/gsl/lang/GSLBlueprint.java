@@ -39,6 +39,12 @@ public final class GSLBlueprint extends AbstractObject<Map<String, Property>>
     @Override
     public final GSLBlueprint cast() { return this; }
     
+    
+    @Override public final GSLStruct     operatorCastStruct() { return Utils.structOf(this); }
+    @Override public final GSLBlueprint  operatorCastBlueprint() { return this; }
+    @Override public final GSLObject     operatorCastObject() { return Utils.objectOf(this); }
+    
+    
     @Override
     public final void operatorSetProperty(String name, GSLValue value) { throw new UnsupportedOperatorException(this, ".="); }
     

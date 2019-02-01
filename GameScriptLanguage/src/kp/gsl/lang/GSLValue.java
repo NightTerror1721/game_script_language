@@ -57,6 +57,25 @@ public abstract class GSLValue extends GSLVarargs
     public <V extends GSLValue> V cast() { return (V) this; }
     
     
+    /* Operator Casts */
+    public abstract GSLInteger    operatorCastInteger();
+    public abstract GSLFloat      operatorCastFloat();
+    public abstract GSLBoolean    operatorCastBoolean();
+    public abstract GSLString     operatorCastString();
+    public abstract GSLConstTuple operatorCastConstTuple();
+    public abstract GSLConstMap   operatorCastConstMap();
+    public abstract GSLFunction   operatorCastFunction();
+    public abstract GSLList       operatorCastList();
+    public abstract GSLTuple      operatorCastTuple();
+    public abstract GSLMap        operatorCastMap();
+    public abstract GSLStruct     operatorCastStruct();
+    public abstract GSLBlueprint  operatorCastBlueprint();
+    public abstract GSLObject     operatorCastObject();
+    public abstract GSLIterator   operatorCastIterator();
+    public abstract GSLRawBytes   operatorCastRawBytes();
+    public final    GSLNative     operatorCastNative() { return cast(); }
+    
+    
     /* Common operators */
     public abstract GSLValue operatorEquals(GSLValue value);
     public abstract GSLValue operatorNotEquals(GSLValue value);
@@ -153,14 +172,16 @@ public abstract class GSLValue extends GSLVarargs
     
     
     /* Immutable Constant Values */
-    public static final GSLImmutableValue ZERO = new GSLInteger(0);
-    public static final GSLImmutableValue ONE = new GSLInteger(1);
-    public static final GSLImmutableValue MINUSONE = new GSLInteger(-1);
-    public static final GSLImmutableValue TRUE = GSLBoolean.TRUE_INSTANCE;
-    public static final GSLImmutableValue FALSE = GSLBoolean.FALSE_INSTANCE;
-    public static final GSLImmutableValue EMPTY_TUPLE = new GSLConstTuple(new GSLImmutableValue[] {});
-    public static final GSLImmutableValue EMPTY_MAP = new GSLConstMap(Collections.emptyMap());
-    public static final GSLImmutableValue NULL = GSLNull.INSTANCE;
+    public static final GSLInteger ZERO = new GSLInteger(0);
+    public static final GSLInteger ONE = new GSLInteger(1);
+    public static final GSLInteger MINUSONE = new GSLInteger(-1);
+    public static final GSLBoolean TRUE = GSLBoolean.TRUE_INSTANCE;
+    public static final GSLBoolean FALSE = GSLBoolean.FALSE_INSTANCE;
+    public static final GSLString EMPTY_STRING = new GSLString("");
+    public static final GSLConstTuple EMPTY_TUPLE = new GSLConstTuple(new GSLImmutableValue[] {});
+    public static final GSLConstMap EMPTY_MAP = new GSLConstMap(Collections.emptyMap());
+    public static final GSLFunction EMPTY_FUNCTION = Def.voidFunction((args) -> {});
+    public static final GSLNull NULL = GSLNull.INSTANCE;
     
     
     /* ValueOf */
@@ -245,4 +266,35 @@ public abstract class GSLValue extends GSLVarargs
     
     
     public static final <T extends GSLValue> GSLValue valueOf(Iterator<T> value) { return Def.iterator(value); }
+    
+    
+    /* Special functions */
+    
+    public static final Object toJavaValue(GSLValue value)
+    {
+        if(value instanceof GSLReference)
+            return toJavaValue(value.operatorReferenceGet());
+        
+        switch(value.getGSLDataType())
+        {
+            case NULL: return null;
+            case INTEGER: return value.<GSLInteger>cast().number;
+            case FLOAT: return value.<GSLFloat>cast().number;
+            case BOOLEAN: return value.<GSLBoolean>cast().bool;
+            case STRING: return value.<GSLString>cast().string;
+            case CONST_TUPLE: return value.toArray();
+            case CONST_MAP: return value.toMap();
+            case FUNCTION: return value;
+            case LIST: return value.<GSLList>cast().list;
+            case TUPLE: return value.<GSLTuple>cast().tuple;
+            case MAP: return value.<GSLMap>cast().map;
+            case STRUCT: return value;
+            case BLUEPRINT: return value;
+            case OBJECT: return value;
+            case ITERATOR: return value.operatorIterator();
+            case RAW_BYTES: return value.<GSLRawBytes>cast().bytes;
+            case NATIVE: return value;
+            default: return value;
+        }
+    }
 }

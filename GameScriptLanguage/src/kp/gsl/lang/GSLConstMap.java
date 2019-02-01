@@ -68,6 +68,24 @@ public final class GSLConstMap extends GSLImmutableValue
     
     @Override
     public final GSLConstMap cast() { return this; }
+    
+    
+    @Override public final GSLInteger    operatorCastInteger() { return new GSLInteger(hashCode()); }
+    @Override public final GSLFloat      operatorCastFloat() { return new GSLFloat(hashCode()); }
+    @Override public final GSLBoolean    operatorCastBoolean() { return boolValue() ? TRUE : FALSE; }
+    @Override public final GSLString     operatorCastString() { return new GSLString(toString()); }
+    @Override public final GSLConstTuple operatorCastConstTuple() { return new GSLConstTuple(Utils.constMapToConstArray(table)); }
+    @Override public final GSLConstMap   operatorCastConstMap() { return this; }
+    @Override public final GSLFunction   operatorCastFunction() { return Utils.autoGetter(this); }
+    @Override public final GSLList       operatorCastList() { return new GSLList(Utils.constMapToList(table)); }
+    @Override public final GSLTuple      operatorCastTuple() { return new GSLTuple(Utils.constMapToArray(table)); }
+    @Override public final GSLMap        operatorCastMap() { return new GSLMap(Utils.constMapToMap(table)); }
+    @Override public final GSLStruct     operatorCastStruct() { return Utils.structOf(this); }
+    @Override public final GSLBlueprint  operatorCastBlueprint() { return Utils.blueprintOf(this); }
+    @Override public final GSLObject     operatorCastObject() { return Utils.objectOf(this); }
+    @Override public final GSLIterator   operatorCastIterator() { return Utils.oneIter(this); }
+    @Override public final GSLRawBytes   operatorCastRawBytes() { return Utils.mapToBytes(table); }
+    
 
     @Override public final GSLValue operatorEquals(GSLValue value) { return equals(value) ? TRUE : FALSE; }
     @Override public final GSLValue operatorNotEquals(GSLValue value) { return equals(value) ? FALSE : TRUE; }

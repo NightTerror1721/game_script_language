@@ -45,6 +45,12 @@ public final class GSLStruct extends AbstractObject<LinkedHashMap<String, Proper
     @Override
     public final GSLStruct cast() { return this; }
     
+    
+    @Override public final GSLStruct     operatorCastStruct() { return this; }
+    @Override public final GSLBlueprint  operatorCastBlueprint() { return Utils.blueprintOf(this); }
+    @Override public final GSLObject     operatorCastObject() { return Utils.objectOf(this); }
+    
+    
     @Override
     public void operatorSetProperty(String name, GSLValue value)
     {

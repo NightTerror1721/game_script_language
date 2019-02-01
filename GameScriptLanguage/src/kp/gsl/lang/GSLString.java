@@ -66,6 +66,24 @@ public final class GSLString extends GSLImmutableValue
     
     @Override
     public final GSLString cast() { return this; }
+    
+    
+    @Override public final GSLInteger    operatorCastInteger() { return new GSLInteger(Long.decode(string)); }
+    @Override public final GSLFloat      operatorCastFloat() { return new GSLFloat(Double.parseDouble(string)); }
+    @Override public final GSLBoolean    operatorCastBoolean() { return string.isEmpty() ? TRUE : FALSE; }
+    @Override public final GSLString     operatorCastString() { return this; }
+    @Override public final GSLConstTuple operatorCastConstTuple() { return new GSLConstTuple(new GSLImmutableValue[] { this }); }
+    @Override public final GSLConstMap   operatorCastConstMap() { return new GSLConstMap(Utils.constMapOf(this)); }
+    @Override public final GSLFunction   operatorCastFunction() { return Utils.autoGetter(this); }
+    @Override public final GSLList       operatorCastList() { return new GSLList(Utils.listOf(this)); }
+    @Override public final GSLTuple      operatorCastTuple() { return new GSLTuple(new GSLValue[] { this }); }
+    @Override public final GSLMap        operatorCastMap() { return new GSLMap(Utils.mapOf(this)); }
+    @Override public final GSLStruct     operatorCastStruct() { return Utils.structOf(this); }
+    @Override public final GSLBlueprint  operatorCastBlueprint() { return Utils.blueprintOf(this); }
+    @Override public final GSLObject     operatorCastObject() { return Utils.objectOf(this); }
+    @Override public final GSLIterator   operatorCastIterator() { return Utils.oneIter(this); }
+    @Override public final GSLRawBytes   operatorCastRawBytes() { return new GSLRawBytes(string.getBytes()); }
+    
 
     @Override public final GSLValue operatorEquals(GSLValue value) { return string.equals(value.toString()) ? TRUE : FALSE; }
     @Override public final GSLValue operatorNotEquals(GSLValue value) { return string.equals(value.toString()) ? FALSE : TRUE; }
@@ -78,9 +96,9 @@ public final class GSLString extends GSLImmutableValue
 
     @Override public final GSLValue operatorPlus(GSLValue value) { throw new UnsupportedOperatorException(this, "+"); }
     @Override public final GSLValue operatorMinus(GSLValue value) { throw new UnsupportedOperatorException(this, "-"); }
-    @Override public final GSLValue operatorMultiply(GSLValue value) { throw new UnsupportedOperatorException(this, "*"); }
+    @Override public final GSLValue operatorMultiply(GSLValue value) { return new GSLString(string.repeat(value.intValue())); }
     @Override public final GSLValue operatorDivide(GSLValue value) { throw new UnsupportedOperatorException(this, "/"); }
-    @Override public final GSLValue operatorRemainder(GSLValue value) { throw new UnsupportedOperatorException(this, "%"); }
+    @Override public final GSLValue operatorRemainder(GSLValue value) { return new GSLString(String.format(string, value.stream().map(GSLValue::toJavaValue).toArray())); }
     @Override public final GSLValue operatorIncrease() { throw new UnsupportedOperatorException(this, "++"); }
     @Override public final GSLValue operatorDecrease() { throw new UnsupportedOperatorException(this, "--"); }
     @Override public final GSLValue operatorNegative() { throw new UnsupportedOperatorException(this, "-()"); }

@@ -58,6 +58,29 @@ public final class GSLFloat extends GSLImmutableValue
     
     @Override
     public final GSLFloat cast() { return this; }
+    
+    
+    @Override public final GSLInteger    operatorCastInteger() { return new GSLInteger((long) number); }
+    @Override public final GSLFloat      operatorCastFloat() { return this; }
+    @Override public final GSLBoolean    operatorCastBoolean() { return number == 0 ? FALSE : TRUE; }
+    @Override public final GSLString     operatorCastString() { return new GSLString(Double.toString(number)); }
+    @Override public final GSLConstTuple operatorCastConstTuple() { return new GSLConstTuple(new GSLImmutableValue[] { this }); }
+    @Override public final GSLConstMap   operatorCastConstMap() { return new GSLConstMap(Utils.constMapOf(this)); }
+    @Override public final GSLFunction   operatorCastFunction() { return Utils.autoGetter(this); }
+    @Override public final GSLList       operatorCastList() { return new GSLList(Utils.listOf(this)); }
+    @Override public final GSLTuple      operatorCastTuple() { return new GSLTuple(new GSLValue[] { this }); }
+    @Override public final GSLMap        operatorCastMap() { return new GSLMap(Utils.mapOf(this)); }
+    @Override public final GSLStruct     operatorCastStruct() { return Utils.structOf(this); }
+    @Override public final GSLBlueprint  operatorCastBlueprint() { return Utils.blueprintOf(this); }
+    @Override public final GSLObject     operatorCastObject() { return Utils.objectOf(this); }
+    @Override public final GSLIterator   operatorCastIterator() { return Utils.oneIter(this); }
+    @Override public final GSLRawBytes   operatorCastRawBytes()
+    {
+        var bytes = new GSLRawBytes(new byte[8]);
+        bytes.setDouble(0, number);
+        return bytes;
+    }
+    
 
     @Override public final GSLValue operatorEquals(GSLValue value) { return number == value.doubleValue() ? TRUE : FALSE; }
     @Override public final GSLValue operatorNotEquals(GSLValue value) { return number != value.doubleValue() ? TRUE : FALSE; }
