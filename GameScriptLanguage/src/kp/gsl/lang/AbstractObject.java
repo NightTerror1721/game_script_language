@@ -194,14 +194,14 @@ public abstract class AbstractObject<M extends Map<String, Property>> extends GS
 
     @Override public final GSLValue operatorPlus(GSLValue value)
     {
-        var prop = operatorGetProperty(ObjectProperties.OP_ADD);
+        var prop = operatorGetProperty(ObjectProperties.OP_PLUS);
         if(prop == NULL)
             throw new UnsupportedOperatorException(this, "+");
         return prop.operatorCall(this, (GSLVarargs) value);
     }
     @Override public final GSLValue operatorMinus(GSLValue value)
     {
-        var prop = operatorGetProperty(ObjectProperties.OP_SUB);
+        var prop = operatorGetProperty(ObjectProperties.OP_MINUS);
         if(prop == NULL)
             throw new UnsupportedOperatorException(this, "-");
         return prop.operatorCall(this, (GSLVarargs) value);
@@ -310,15 +310,22 @@ public abstract class AbstractObject<M extends Map<String, Property>> extends GS
     {
         var prop = operatorGetProperty(ObjectProperties.OP_SET);
         if(prop == NULL)
-            throw new UnsupportedOperatorException(this, "[]=");
+            throw new UnsupportedOperatorException(this, "[x]=");
         prop.operatorCall(this, new GSLVarargs.Pair(index, value));
     }
     @Override public final void operatorSet(int index, GSLValue value)
     {
         var prop = operatorGetProperty(ObjectProperties.OP_SET);
         if(prop == NULL)
-            throw new UnsupportedOperatorException(this, "[]=");
+            throw new UnsupportedOperatorException(this, "[x]=");
         prop.operatorCall(this, new GSLVarargs.Pair(new GSLInteger(index), value));
+    }
+    @Override public final void operatorAdd(GSLValue value)
+    {
+        var prop = operatorGetProperty(ObjectProperties.OP_ADD);
+        if(prop == NULL)
+            throw new UnsupportedOperatorException(this, "[]=");
+        prop.operatorCall(this, (GSLVarargs) value);
     }
 
     @Override

@@ -139,6 +139,7 @@ public final class GSLTuple extends GSLValue
     {
         tuple[index] = value;
     }
+    @Override public final void operatorAdd(GSLValue value) { throw new UnsupportedOperatorException(this, "[]="); }
 
     @Override
     public GSLValue operatorGetProperty(String name)

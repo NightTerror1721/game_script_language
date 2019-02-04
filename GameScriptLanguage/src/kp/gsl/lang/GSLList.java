@@ -146,6 +146,10 @@ public final class GSLList extends GSLValue
     {
         list.set(index, value);
     }
+    @Override public final void operatorAdd(GSLValue value)
+    {
+        list.add(value);
+    }
 
     @Override
     public GSLValue operatorGetProperty(String name)

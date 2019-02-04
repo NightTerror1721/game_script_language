@@ -32,6 +32,16 @@ public final class GSLBlueprint extends AbstractObject<Map<String, Property>>
     {
         super(new HashMap<>(obj.props), obj.parent);
     }
+    
+    public static final GSLBlueprint assimilate(AbstractObject obj, GSLValue parent)
+    {
+        return new GSLBlueprint(obj.props, parent);
+    }
+    
+    public static final GSLBlueprint assimilate(AbstractObject obj)
+    {
+        return new GSLBlueprint(obj.props);
+    }
 
     @Override
     public final GSLDataType getGSLDataType() { return GSLDataType.BLUEPRINT; }

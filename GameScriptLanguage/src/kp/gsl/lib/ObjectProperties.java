@@ -26,8 +26,8 @@ public interface ObjectProperties
     String OP_NOT = "__not__";
     String OP_LEN = "__len__";
     
-    String OP_ADD = "__add__";
-    String OP_SUB = "__sub__";
+    String OP_PLUS = "__plus__";
+    String OP_MINUS = "__minus__";
     String OP_MUL = "__mul__";
     String OP_DIV = "__div__";
     String OP_MOD = "__mod__";
@@ -44,6 +44,7 @@ public interface ObjectProperties
     
     String OP_GET = "__get__";
     String OP_SET = "__set__";
+    String OP_ADD = "__add__";
     
     String OP_CALL = "__call__";
     

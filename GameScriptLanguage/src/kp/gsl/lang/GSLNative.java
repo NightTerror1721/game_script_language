@@ -55,6 +55,24 @@ public class GSLNative extends GSLValue
     
     @Override
     public final Stream<GSLValue> stream() { return Stream.of(this); }
+    
+    
+    @Override public final GSLInteger    operatorCastInteger() { return new GSLInteger(longValue()); }
+    @Override public final GSLFloat      operatorCastFloat() { return new GSLFloat(doubleValue()); }
+    @Override public final GSLBoolean    operatorCastBoolean() { return boolValue() ? TRUE : FALSE; }
+    @Override public final GSLString     operatorCastString() { return new GSLString(toString()); }
+    @Override public final GSLConstTuple operatorCastConstTuple() { return new GSLConstTuple(Utils.toImmutable(toArray())); }
+    @Override public final GSLConstMap   operatorCastConstMap() { return new GSLConstMap(Utils.toImmutable(toMap())); }
+    @Override public final GSLFunction   operatorCastFunction() { return Utils.autoGetter(this); }
+    @Override public final GSLList       operatorCastList() { return new GSLList(toList()); }
+    @Override public final GSLTuple      operatorCastTuple() { return new GSLTuple(toArray()); }
+    @Override public final GSLMap        operatorCastMap() { return new GSLMap(toMap()); }
+    @Override public final GSLStruct     operatorCastStruct() { return Utils.structOf(this); }
+    @Override public final GSLBlueprint  operatorCastBlueprint() { return Utils.blueprintOf(this); }
+    @Override public final GSLObject     operatorCastObject() { return Utils.objectOf(this); }
+    @Override public final GSLIterator   operatorCastIterator() { return Utils.oneIter(this); }
+    @Override public GSLRawBytes   operatorCastRawBytes() { throw new UnsupportedOperatorException(this, "(bytes)"); }
+    
 
     @Override public final GSLValue operatorEquals(GSLValue value) { return equals(value) ? TRUE : FALSE; }
     @Override public final GSLValue operatorNotEquals(GSLValue value) { return equals(value) ? FALSE : TRUE; }
@@ -82,7 +100,8 @@ public class GSLNative extends GSLValue
     @Override public GSLValue operatorBitwiseNot() { throw new UnsupportedOperatorException(this, "~"); }
 
     @Override public GSLValue operatorGet(GSLValue index) { throw new UnsupportedOperatorException(this, "[]"); }
-    @Override public void operatorSet(GSLValue index, GSLValue value) { throw new UnsupportedOperatorException(this, "[]="); }
+    @Override public void operatorSet(GSLValue index, GSLValue value) { throw new UnsupportedOperatorException(this, "[x]="); }
+    @Override public void operatorAdd(GSLValue value) { throw new UnsupportedOperatorException(this, "[]="); }
 
     @Override
     public GSLValue operatorGetProperty(String name) { throw new UnsupportedOperatorException(this, "."); }

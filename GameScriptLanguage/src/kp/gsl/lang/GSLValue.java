@@ -112,6 +112,7 @@ public abstract class GSLValue extends GSLVarargs
     public abstract void     operatorSet(GSLValue index, GSLValue value);
     public          GSLValue operatorGet(int index) { return operatorGet(new GSLInteger(index)); }
     public          void     operatorSet(int index, GSLValue value) { operatorSet(new GSLInteger(index), value); }
+    public abstract void     operatorAdd(GSLValue value);
     
     
     /* Object operators */

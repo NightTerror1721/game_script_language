@@ -53,6 +53,22 @@ public abstract class GSLReference extends GSLValue
 
     @Override
     public final Stream<GSLValue> stream() { return operatorReferenceGet().stream(); }
+    
+    @Override public final GSLInteger    operatorCastInteger() { return operatorReferenceGet().operatorCastInteger(); }
+    @Override public final GSLFloat      operatorCastFloat() { return operatorReferenceGet().operatorCastFloat(); }
+    @Override public final GSLBoolean    operatorCastBoolean() { return operatorReferenceGet().operatorCastBoolean(); }
+    @Override public final GSLString     operatorCastString() { return operatorReferenceGet().operatorCastString(); }
+    @Override public final GSLConstTuple operatorCastConstTuple() { return operatorReferenceGet().operatorCastConstTuple(); }
+    @Override public final GSLConstMap   operatorCastConstMap() { return operatorReferenceGet().operatorCastConstMap(); }
+    @Override public final GSLFunction   operatorCastFunction() { return operatorReferenceGet().operatorCastFunction(); }
+    @Override public final GSLList       operatorCastList() { return operatorReferenceGet().operatorCastList(); }
+    @Override public final GSLTuple      operatorCastTuple() { return operatorReferenceGet().operatorCastTuple(); }
+    @Override public final GSLMap        operatorCastMap() { return operatorReferenceGet().operatorCastMap(); }
+    @Override public final GSLStruct     operatorCastStruct() { return operatorReferenceGet().operatorCastStruct(); }
+    @Override public final GSLBlueprint  operatorCastBlueprint() { return operatorReferenceGet().operatorCastBlueprint(); }
+    @Override public final GSLObject     operatorCastObject() { return operatorReferenceGet().operatorCastObject(); }
+    @Override public final GSLIterator   operatorCastIterator() { return operatorReferenceGet().operatorCastIterator(); }
+    @Override public final GSLRawBytes   operatorCastRawBytes() { return operatorReferenceGet().operatorCastRawBytes(); }
 
     @Override
     public final GSLValue operatorEquals(GSLValue value) { return operatorReferenceGet().operatorEquals(value); }
@@ -131,6 +147,9 @@ public abstract class GSLReference extends GSLValue
     
     @Override
     public final void operatorSet(int index, GSLValue value) { operatorReferenceGet().operatorSet(index, value); }
+    
+    @Override
+    public final void operatorAdd(GSLValue value) { operatorReferenceGet().operatorAdd(value); }
 
     @Override
     public final GSLValue operatorGetProperty(String name) { return operatorReferenceGet().operatorGetProperty(name); }
