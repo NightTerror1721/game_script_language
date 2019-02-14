@@ -21,5 +21,6 @@ public interface ScriptConstants
     
     int CODE_STACK_LEN = 0x0;
     int CODE_VARS_LEN  = 0x1;
-    int CODE_INIT      = 0x2;
+    int CODE_IS_GEN    = 0x2;
+    int CODE_INIT      = 0x3;
 }

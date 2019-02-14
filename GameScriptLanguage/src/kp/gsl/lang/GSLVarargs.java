@@ -5,6 +5,13 @@
  */
 package kp.gsl.lang;
 
+import java.util.Iterator;
+import java.util.List;
+import java.util.Spliterator;
+import java.util.Spliterators;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
+import java.util.stream.StreamSupport;
 import static kp.gsl.lang.GSLValue.NULL;
 
 /**
@@ -157,4 +164,42 @@ public abstract class GSLVarargs
     public static final GSLVarargs varargsOf(GSLValue... values) { return new Array(values); }
     public static final GSLVarargs subVarargs(GSLVarargs args, int from, int to) { return new Sub(args, from, to); }
     public static final GSLVarargs subVarargs(GSLVarargs args, int from) { return new Sub(args, from, 0); }
+    
+    public static final Iterator<GSLValue> varargsAsIterator(GSLVarargs varargs)
+    {
+        return new Iterator<>()
+        {
+            private final int len = varargs.numberOfArguments();
+            private int it;
+            @Override public final boolean hasNext() { return it < len; }
+            @Override public final GSLValue next() { return varargs.arg(it++); }
+        };
+    }
+    
+    public static final Iterable<GSLValue> varargsAsIterable(GSLVarargs varargs) { return () -> varargsAsIterator(varargs); }
+    
+    public static final Stream<GSLValue> varargsAsStream(GSLVarargs varargs)
+    {
+        return StreamSupport.stream(Spliterators.spliterator(varargsAsIterator(varargs),
+                varargs.numberOfArguments(), Spliterator.ORDERED | Spliterator.SIZED), false);
+    }
+    
+    public static final GSLValue[] varargsAsArray(GSLVarargs varargs) { return varargsAsStream(varargs).toArray(GSLValue[]::new); }
+    public static final GSLValue[] varargsAsArray(GSLVarargs varargs, int from, int to)
+    {
+        return varargsAsStream(varargs).skip(from).limit(to - from).toArray(GSLValue[]::new);
+    }
+    public static final GSLValue[] varargsAsArray(GSLVarargs varargs, int from)
+    {
+        return varargsAsStream(varargs).skip(from).toArray(GSLValue[]::new);
+    }
+    public static final List<GSLValue> varargsAsList(GSLVarargs varargs) { return varargsAsStream(varargs).collect(Collectors.toList()); }
+    public static final List<GSLValue> varargsAsList(GSLVarargs varargs, int from, int to)
+    {
+        return varargsAsStream(varargs).skip(from).limit(to - from).collect(Collectors.toList());
+    }
+    public static final List<GSLValue> varargsAsList(GSLVarargs varargs, int from)
+    {
+        return varargsAsStream(varargs).skip(from).collect(Collectors.toList());
+    }
 }

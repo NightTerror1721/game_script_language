@@ -40,7 +40,7 @@ public abstract class GSLLibraryElement
     
     public abstract GSLValue operatorGetProperty(GSLGlobals globals, String name);
     
-    public abstract GSLValue operatorCall(GSLGlobals globals, GSLValue self, GSLVarargs args);
+    public abstract GSLValue operatorCall(GSLGlobals globals, GSLVarargs args);
     public abstract GSLValue operatorNew(GSLGlobals globals, GSLVarargs args);
     
 }

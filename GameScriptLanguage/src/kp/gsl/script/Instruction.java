@@ -18,8 +18,8 @@ public interface Instruction
     int LOAD_VAR        = 0x03; // [0] => [+1] <var_idx>
     int LOAD_FUNCTION   = 0x04; // [0] => [+1] <func_idx>
     int LOAD_FUNCTION16 = 0x05; // [0] => [+1] <func_idx|0-7> <func_idx|8-15>
-    int LOAD_CLOSURE    = 0x06; // [-?>=0] => [+1] <func_idx> <pars_count>
-    int LOAD_CLOSURE16  = 0x07; // [-?>=0] => [+1] <func_idx|0-7> <func_idx|8-15> <pars_count>
+    int LOAD_CLOSURE    = 0x06; // [-?>=0] => [+1] <pars_count> <func_idx>
+    int LOAD_CLOSURE16  = 0x07; // [-?>=0] => [+1] <pars_count> <func_idx|0-7> <func_idx|8-15>
     int LOAD_GLOBAL     = 0x08; // [0] => [+1] <identifier_idx>
     int LOAD_GLOBAL16   = 0x09; // [0] => [+1] <identifier_idx|0-7> <identifier_idx|8-15>
     int LOAD_NULL       = 0x0A; // [0] => [+1]
@@ -108,9 +108,9 @@ public interface Instruction
     int MULTIPLY        = 0x55; // [-2] => [+1]
     int DIVIDE          = 0x56; // [-2] => [+1]
     int REMAINDER       = 0x57; // [-2] => [+1]
-    int NEGATIVE        = 0x58; // [-2] => [+1]
-    int INCREASE        = 0x59; // [-2] => [+1]
-    int DECREASE        = 0x5A; // [-2] => [+1]
+    int NEGATIVE        = 0x58; // [-1] => [+1]
+    int INCREASE        = 0x59; // [-1] => [+1]
+    int DECREASE        = 0x5A; // [-1] => [+1]
     
     int BW_SFH_L        = 0x5B; // [-2] => [+1]
     int BW_SFH_R        = 0x5C; // [-2] => [+1]
@@ -135,11 +135,11 @@ public interface Instruction
     int TYPEID          = 0x6E; // [-1] => [+1]
     int ITERATOR        = 0x6F; // [-1] => [+1]
     
-    int GET             = 0x70; // [-1] => [+1]
-    int GET_I           = 0x71; // [0] => [+1] <local_value>
-    int SET             = 0x72; // [-2] => [0]
-    int SET_I           = 0x73; // [-1] => [0] <local_value>
-    int ADD             = 0x74; // [-1] => [0]
+    int GET             = 0x70; // [-2] => [+1]
+    int GET_I           = 0x71; // [-1] => [+1] <local_value>
+    int SET             = 0x72; // [-3] => [0]
+    int SET_I           = 0x73; // [-2] => [0] <local_value>
+    int ADD             = 0x74; // [-2] => [0]
     
     int PROPERTY_GET    = 0x75; // [-1] => [+1] <identifier_idx>
     int PROPERTY_GET16  = 0x76; // [-1] => [+1] <identifier_idx|0-7> <identifier_idx|8-15>
@@ -178,24 +178,24 @@ public interface Instruction
     int LOCAL_VCALL     = 0x93; // [-?>=0] => [0] <args_len> <func_idx>
     int LOCAL_VCALL16   = 0x94; // [-?>=0] => [0] <args_len> <func_idx|0-7> <func_idx|8-15>
     
-    int CALL            = 0x95; // [-?>=0] => [+1] <args_len>
-    int VCALL           = 0x96; // [-?>=0] => [0] <args_len>
+    int CALL            = 0x95; // [-?>=1] => [+1] <args_len>
+    int VCALL           = 0x96; // [-?>=1] => [0] <args_len>
     
     int INVOKE          = 0x97; // [-?>=1] => [+1] <args_len> <identifier_idx>
     int INVOKE16        = 0x98; // [-?>=1] => [+1] <args_len> <identifier_idx|0-7> <identifier_idx|8-15>
-    int VINVOKE         = 0x99; // [-?>=1] => [+1] <args_len> <identifier_idx>
-    int VINVOKE16       = 0x9A; // [-?>=1] => [+1] <args_len> <identifier_idx|0-7> <identifier_idx|8-15>
+    int VINVOKE         = 0x99; // [-?>=1] => [0] <args_len> <identifier_idx>
+    int VINVOKE16       = 0x9A; // [-?>=1] => [0] <args_len> <identifier_idx|0-7> <identifier_idx|8-15>
     
     int LIBE_LOAD       = 0x9B; // [0] => [+1] <libelement_idx>
     int LIBE_LOAD16     = 0x9C; // [0] => [+1] <libelement_idx|0-7> <libelement_idx|8-15>
     int LIBE_GET        = 0x9D; // [-1] => [+1] <libelement_idx>
     int LIBE_GET16      = 0x9E; // [-1] => [+1] <libelement_idx|0-7> <libelement_idx|8-15>
-    int LIBE_GET_I      = 0x9F; // [-1] => [+1] <libelement_idx> <local_value>
-    int LIBE_GET_I16    = 0xA0; // [-1] => [+1] <libelement_idx|0-7> <libelement_idx|8-15> <local_value>
-    int LIBE_P_GET      = 0xA1; // [-1] => [+1] <libelement_idx> <identifier_idx>
-    int LIBE_P16_GET    = 0xA2; // [-1] => [+1] <libelement_idx> <identifier_idx|0-7> <identifier_idx|8-15>
-    int LIBE_P_GET16    = 0xA3; // [-1] => [+1] <libelement_idx|0-7> <libelement_idx|8-15> <identifier_idx>
-    int LIBE_P16_GET16  = 0xA4; // [-1] => [+1] <libelement_idx|0-7> <libelement_idx|8-15> <identifier_idx|0-7> <identifier_idx|8-15>
+    int LIBE_GET_I      = 0x9F; // [0] => [+1] <libelement_idx> <local_value>
+    int LIBE_GET_I16    = 0xA0; // [0] => [+1] <libelement_idx|0-7> <libelement_idx|8-15> <local_value>
+    int LIBE_P_GET      = 0xA1; // [0] => [+1] <libelement_idx> <identifier_idx>
+    int LIBE_P16_GET    = 0xA2; // [0] => [+1] <libelement_idx> <identifier_idx|0-7> <identifier_idx|8-15>
+    int LIBE_P_GET16    = 0xA3; // [0] => [+1] <libelement_idx|0-7> <libelement_idx|8-15> <identifier_idx>
+    int LIBE_P16_GET16  = 0xA4; // [0] => [+1] <libelement_idx|0-7> <libelement_idx|8-15> <identifier_idx|0-7> <identifier_idx|8-15>
     int LIBE_CALL       = 0xA5; // [-?>=0] => [+1] <args_len> <libelement_idx>
     int LIBE_CALL16     = 0xA6; // [-?>=0] => [+1] <args_len> <libelement_idx|0-7> <libelement_idx|8-15>
     int LIBE_VCALL      = 0xA7; // [-?>=0] => [0] <args_len> <libelement_idx>
@@ -210,5 +210,26 @@ public interface Instruction
     
     int NEW             = 0xAF; // [-?>=0] => [+1] <args_len>
     int VNEW            = 0xB0; // [-?>=0] => [0] <args_len>
-    int BASE            = 0xB1; // [-1] => [+1]
+    int SELF            = 0xB1; // [0] => [+1]
+    int CLASS           = 0xB2; // [-1] => [+1]
+    int BASE            = 0xB3; // [-1] => [+1]
+    
+    int YIELD           = 0xB4; // [-1] => [0]
+    int YIELD_NULL      = 0xB5; // [0] => [0]
+    int YIELD_INT       = 0xB6; // [-1] => [0]
+    int YIELD_FLOAT     = 0xB7; // [-1] => [0]
+    int YIELD_BOOL      = 0xB8; // [-1] => [0]
+    int YIELD_STRING    = 0xB9; // [-1] => [0]
+    int YIELD_CTUPLE    = 0xBA; // [-1] => [0]
+    int YIELD_CMAP      = 0xBB; // [-1] => [0]
+    int YIELD_FUNCTION  = 0xBC; // [-1] => [0]
+    int YIELD_LIST      = 0xBD; // [-1] => [0]
+    int YIELD_TUPLE     = 0xBE; // [-1] => [0]
+    int YIELD_MAP       = 0xBF; // [-1] => [0]
+    int YIELD_STRUCT    = 0xC0; // [-1] => [0]
+    int YIELD_BPRINT    = 0xC1; // [-1] => [0]
+    int YIELD_OBJECT    = 0xC2; // [-1] => [0]
+    int YIELD_ITERATOR  = 0xC3; // [-1] => [0]
+    int YIELD_BYTES     = 0xC4; // [-1] => [0]
+    int YIELD_NATIVE    = 0xC5; // [-1] => [0]
 }
