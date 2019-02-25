@@ -28,17 +28,22 @@ import kp.gsl.lib.ObjectProperties;
  * @author Asus
  * @param <M>
  */
-public abstract class AbstractObject<M extends Map<String, Property>> extends GSLValue
+public abstract class AbstractObject extends GSLValue
 {
     final GSLValue parent;
-    final M props;
+    final Map<String, Property> props;
     
-    AbstractObject(M props, GSLValue parent)
+    AbstractObject(Map<String, Property> props, GSLValue parent)
     {
         if(props == null)
             throw new NullPointerException();
         this.props = props;
         this.parent = parent;
+    }
+    AbstractObject(AbstractObject model) //Move constructor
+    {
+        this.parent = model.parent;
+        this.props = model.props;
     }
     
     public final GSLValue getParent() { return parent; }
@@ -326,6 +331,13 @@ public abstract class AbstractObject<M extends Map<String, Property>> extends GS
         if(prop == NULL)
             throw new UnsupportedOperatorException(this, "[]=");
         prop.operatorCall(this, (GSLVarargs) value);
+    }
+    @Override public final GSLValue operatorPeek()
+    {
+        var prop = operatorGetProperty(ObjectProperties.OP_PEEK);
+        if(prop == NULL)
+            throw new UnsupportedOperatorException(this, "[]");
+        return prop.operatorCall(this);
     }
 
     @Override

@@ -91,53 +91,58 @@ public final class GSLConstTuple extends GSLImmutableValue
     @Override public final GSLRawBytes   operatorCastRawBytes() { return Utils.arrayToBytes(tuple); }
     
 
-    @Override public final GSLValue operatorEquals(GSLValue value) { return equals(value) ? TRUE : FALSE; }
-    @Override public final GSLValue operatorNotEquals(GSLValue value) { return equals(value) ? FALSE : TRUE; }
-    @Override public final GSLValue operatorGreater(GSLValue value) { throw new UnsupportedOperatorException(this, ">"); }
-    @Override public final GSLValue operatorSmaller(GSLValue value) { throw new UnsupportedOperatorException(this, "<"); }
-    @Override public final GSLValue operatorGreaterEquals(GSLValue value) { throw new UnsupportedOperatorException(this, ">="); }
-    @Override public final GSLValue operatorSmallerEquals(GSLValue value) { throw new UnsupportedOperatorException(this, "<="); }
-    @Override public final GSLValue operatorNegate() { return boolValue() ? FALSE : TRUE; }
+    @Override public final GSLImmutableValue operatorEquals(GSLValue value) { return equals(value) ? TRUE : FALSE; }
+    @Override public final GSLImmutableValue operatorNotEquals(GSLValue value) { return equals(value) ? FALSE : TRUE; }
+    @Override public final GSLImmutableValue operatorGreater(GSLValue value) { throw new UnsupportedOperatorException(this, ">"); }
+    @Override public final GSLImmutableValue operatorSmaller(GSLValue value) { throw new UnsupportedOperatorException(this, "<"); }
+    @Override public final GSLImmutableValue operatorGreaterEquals(GSLValue value) { throw new UnsupportedOperatorException(this, ">="); }
+    @Override public final GSLImmutableValue operatorSmallerEquals(GSLValue value) { throw new UnsupportedOperatorException(this, "<="); }
+    @Override public final GSLImmutableValue operatorNegate() { return boolValue() ? FALSE : TRUE; }
     @Override public final int      operatorLength() { return tuple.length; }
 
-    @Override public final GSLValue operatorPlus(GSLValue value)
+    @Override public final GSLImmutableValue operatorPlus(GSLValue value)
     {
-        return new GSLTuple(Stream.concat(stream(), value.stream())
-                .toArray(GSLValue[]::new));
+        return new GSLConstTuple(Stream.concat(stream(), value.stream().map(v -> (GSLImmutableValue) v))
+                .toArray(GSLImmutableValue[]::new));
     }
-    @Override public final GSLValue operatorMinus(GSLValue value)
+    @Override public final GSLImmutableValue operatorMinus(GSLValue value)
     {
         var list = value.toList();
-        return new GSLTuple(stream().filter(list::contains).toArray(GSLValue[]::new));
+        return new GSLConstTuple(stream().filter(list::contains).toArray(GSLImmutableValue[]::new));
     }
-    @Override public final GSLValue operatorMultiply(GSLValue value) { throw new UnsupportedOperatorException(this, "*"); }
-    @Override public final GSLValue operatorDivide(GSLValue value) { throw new UnsupportedOperatorException(this, "/"); }
-    @Override public final GSLValue operatorRemainder(GSLValue value) { throw new UnsupportedOperatorException(this, "%"); }
-    @Override public final GSLValue operatorIncrease() { throw new UnsupportedOperatorException(this, "++"); }
-    @Override public final GSLValue operatorDecrease() { throw new UnsupportedOperatorException(this, "--"); }
-    @Override public final GSLValue operatorNegative() { throw new UnsupportedOperatorException(this, "-()"); }
+    @Override public final GSLImmutableValue operatorMultiply(GSLValue value) { throw new UnsupportedOperatorException(this, "*"); }
+    @Override public final GSLImmutableValue operatorDivide(GSLValue value) { throw new UnsupportedOperatorException(this, "/"); }
+    @Override public final GSLImmutableValue operatorRemainder(GSLValue value) { throw new UnsupportedOperatorException(this, "%"); }
+    @Override public final GSLImmutableValue operatorIncrease() { throw new UnsupportedOperatorException(this, "++"); }
+    @Override public final GSLImmutableValue operatorDecrease() { throw new UnsupportedOperatorException(this, "--"); }
+    @Override public final GSLImmutableValue operatorNegative() { throw new UnsupportedOperatorException(this, "-()"); }
 
     
-    @Override public final GSLValue operatorBitwiseShiftLeft(GSLValue value) { throw new UnsupportedOperatorException(this, "<<"); }
-    @Override public final GSLValue operatorBitwiseShiftRight(GSLValue value) { throw new UnsupportedOperatorException(this, ">>"); }
-    @Override public final GSLValue operatorBitwiseAnd(GSLValue value) { throw new UnsupportedOperatorException(this, "&"); }
-    @Override public final GSLValue operatorBitwiseOr(GSLValue value) { throw new UnsupportedOperatorException(this, "|"); }
-    @Override public final GSLValue operatorBitwiseXor(GSLValue value) { throw new UnsupportedOperatorException(this, "^"); }
-    @Override public final GSLValue operatorBitwiseNot() { throw new UnsupportedOperatorException(this, "~"); }
+    @Override public final GSLImmutableValue operatorBitwiseShiftLeft(GSLValue value) { throw new UnsupportedOperatorException(this, "<<"); }
+    @Override public final GSLImmutableValue operatorBitwiseShiftRight(GSLValue value) { throw new UnsupportedOperatorException(this, ">>"); }
+    @Override public final GSLImmutableValue operatorBitwiseAnd(GSLValue value) { throw new UnsupportedOperatorException(this, "&"); }
+    @Override public final GSLImmutableValue operatorBitwiseOr(GSLValue value) { throw new UnsupportedOperatorException(this, "|"); }
+    @Override public final GSLImmutableValue operatorBitwiseXor(GSLValue value) { throw new UnsupportedOperatorException(this, "^"); }
+    @Override public final GSLImmutableValue operatorBitwiseNot() { throw new UnsupportedOperatorException(this, "~"); }
 
-    @Override public final GSLValue operatorGet(GSLValue index)
+    @Override public final GSLImmutableValue operatorGet(GSLValue index)
     {
-        GSLValue v;
+        GSLImmutableValue v;
         return (v = tuple[index.intValue()]) == null ? NULL : v;
     }
-    @Override public final GSLValue operatorGet(int index)
+    @Override public final GSLImmutableValue operatorGet(int index)
     {
-        GSLValue v;
+        GSLImmutableValue v;
         return (v = tuple[index]) == null ? NULL : v;
+    }
+    @Override public final GSLImmutableValue operatorPeek()
+    {
+        GSLImmutableValue v;
+        return (v = tuple[tuple.length - 1]) == null ? NULL : v;
     }
 
     @Override
-    public GSLValue operatorGetProperty(String name)
+    public GSLImmutableValue operatorGetProperty(String name)
     {
         switch(name)
         {
@@ -181,28 +186,28 @@ public final class GSLConstTuple extends GSLImmutableValue
     @Override public final int hashCode() { return Arrays.hashCode(tuple); }
     
     
-    private static final GSLValue CONTAINS = Def.<GSLConstTuple>boolMethod((self, args) -> List.of(self.tuple).contains(args.arg0()));
+    private static final GSLImmutableValue CONTAINS = Def.<GSLConstTuple>boolMethod((self, args) -> List.of(self.tuple).contains(args.arg0()));
     
-    private static final GSLValue GET = Def.<GSLConstTuple>method((self, args) -> {
+    private static final GSLImmutableValue GET = Def.<GSLConstTuple>method((self, args) -> {
         GSLValue v;
         return (v = self.tuple[args.arg0().intValue()]) == null ? args.arg1() : v;
     });
     
-    private static final GSLValue INDEX_OF = Def.<GSLConstTuple>intMethod((self, args) -> self.toList().indexOf(args.arg0()));
+    private static final GSLImmutableValue INDEX_OF = Def.<GSLConstTuple>intMethod((self, args) -> self.toList().indexOf(args.arg0()));
     
-    private static final GSLValue EMPTY = Def.<GSLConstTuple>boolMethod((self, args) -> self.tuple.length < 1);
+    private static final GSLImmutableValue EMPTY = Def.<GSLConstTuple>boolMethod((self, args) -> self.tuple.length < 1);
     
-    private static final GSLValue LAST_INDEX_OF = Def.<GSLConstTuple>intMethod((self, args) -> self.toList().lastIndexOf(args.arg0()));
+    private static final GSLImmutableValue LAST_INDEX_OF = Def.<GSLConstTuple>intMethod((self, args) -> self.toList().lastIndexOf(args.arg0()));
     
-    private static final GSLValue SIZE = Def.<GSLConstTuple>intMethod((self, args) -> self.tuple.length);
+    private static final GSLImmutableValue SIZE = Def.<GSLConstTuple>intMethod((self, args) -> self.tuple.length);
     
-    private static final GSLValue SORT = Def.<GSLConstTuple>method((self, args) -> {
+    private static final GSLImmutableValue SORT = Def.<GSLConstTuple>method((self, args) -> {
         var other = new LinkedList<>(List.of(self.tuple));
         other.sort(Utils.defaultComparator(args.arg0()));
         return new GSLTuple(other.toArray(GSLValue[]::new));
     });
     
-    private static final GSLValue SUB = Def.<GSLConstTuple>method((self, args) -> {
+    private static final GSLImmutableValue SUB = Def.<GSLConstTuple>method((self, args) -> {
         if(args.numberOfArguments() > 1)
             return new GSLTuple(Arrays.copyOfRange(self.tuple, args.arg0().intValue(), args.arg1().intValue()));
         return new GSLTuple(Arrays.copyOfRange(self.tuple, args.arg0().intValue(), self.tuple.length));

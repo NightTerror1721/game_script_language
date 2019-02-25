@@ -44,6 +44,7 @@ public interface ObjectProperties
     
     String OP_GET = "__get__";
     String OP_SET = "__set__";
+    String OP_PEEK = "__peek__";
     String OP_ADD = "__add__";
     
     String OP_CALL = "__call__";

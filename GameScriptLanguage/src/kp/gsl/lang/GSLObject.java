@@ -13,7 +13,7 @@ import kp.gsl.lang.AbstractObject.Property;
  *
  * @author Asus
  */
-public final class GSLObject extends AbstractObject<Map<String, Property>>
+public final class GSLObject extends AbstractObject
 {
     public GSLObject(Map<String, Property> props, GSLValue parent)
     {

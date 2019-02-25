@@ -85,42 +85,43 @@ public final class GSLString extends GSLImmutableValue
     @Override public final GSLRawBytes   operatorCastRawBytes() { return new GSLRawBytes(string.getBytes()); }
     
 
-    @Override public final GSLValue operatorEquals(GSLValue value) { return string.equals(value.toString()) ? TRUE : FALSE; }
-    @Override public final GSLValue operatorNotEquals(GSLValue value) { return string.equals(value.toString()) ? FALSE : TRUE; }
-    @Override public final GSLValue operatorGreater(GSLValue value) { return string.compareTo(value.toString()) > 0 ? TRUE : FALSE; }
-    @Override public final GSLValue operatorSmaller(GSLValue value) { return string.compareTo(value.toString()) < 0 ? TRUE : FALSE; }
-    @Override public final GSLValue operatorGreaterEquals(GSLValue value) { return string.compareTo(value.toString()) >= 0 ? TRUE : FALSE; }
-    @Override public final GSLValue operatorSmallerEquals(GSLValue value) { return string.compareTo(value.toString()) <= 0 ? TRUE : FALSE; }
-    @Override public final GSLValue operatorNegate() { return string.isEmpty() ? TRUE : FALSE; }
+    @Override public final GSLImmutableValue operatorEquals(GSLValue value) { return string.equals(value.toString()) ? TRUE : FALSE; }
+    @Override public final GSLImmutableValue operatorNotEquals(GSLValue value) { return string.equals(value.toString()) ? FALSE : TRUE; }
+    @Override public final GSLImmutableValue operatorGreater(GSLValue value) { return string.compareTo(value.toString()) > 0 ? TRUE : FALSE; }
+    @Override public final GSLImmutableValue operatorSmaller(GSLValue value) { return string.compareTo(value.toString()) < 0 ? TRUE : FALSE; }
+    @Override public final GSLImmutableValue operatorGreaterEquals(GSLValue value) { return string.compareTo(value.toString()) >= 0 ? TRUE : FALSE; }
+    @Override public final GSLImmutableValue operatorSmallerEquals(GSLValue value) { return string.compareTo(value.toString()) <= 0 ? TRUE : FALSE; }
+    @Override public final GSLImmutableValue operatorNegate() { return string.isEmpty() ? TRUE : FALSE; }
     @Override public final int      operatorLength() { return string.length(); }
 
-    @Override public final GSLValue operatorPlus(GSLValue value) { throw new UnsupportedOperatorException(this, "+"); }
-    @Override public final GSLValue operatorMinus(GSLValue value) { throw new UnsupportedOperatorException(this, "-"); }
-    @Override public final GSLValue operatorMultiply(GSLValue value) { return new GSLString(string.repeat(value.intValue())); }
-    @Override public final GSLValue operatorDivide(GSLValue value) { throw new UnsupportedOperatorException(this, "/"); }
-    @Override public final GSLValue operatorRemainder(GSLValue value) { return new GSLString(String.format(string, value.stream().map(GSLValue::toJavaValue).toArray())); }
-    @Override public final GSLValue operatorIncrease() { throw new UnsupportedOperatorException(this, "++"); }
-    @Override public final GSLValue operatorDecrease() { throw new UnsupportedOperatorException(this, "--"); }
-    @Override public final GSLValue operatorNegative() { throw new UnsupportedOperatorException(this, "-()"); }
+    @Override public final GSLImmutableValue operatorPlus(GSLValue value) { throw new UnsupportedOperatorException(this, "+"); }
+    @Override public final GSLImmutableValue operatorMinus(GSLValue value) { throw new UnsupportedOperatorException(this, "-"); }
+    @Override public final GSLImmutableValue operatorMultiply(GSLValue value) { return new GSLString(string.repeat(value.intValue())); }
+    @Override public final GSLImmutableValue operatorDivide(GSLValue value) { throw new UnsupportedOperatorException(this, "/"); }
+    @Override public final GSLImmutableValue operatorRemainder(GSLValue value) { return new GSLString(String.format(string, value.stream().map(GSLValue::toJavaValue).toArray())); }
+    @Override public final GSLImmutableValue operatorIncrease() { throw new UnsupportedOperatorException(this, "++"); }
+    @Override public final GSLImmutableValue operatorDecrease() { throw new UnsupportedOperatorException(this, "--"); }
+    @Override public final GSLImmutableValue operatorNegative() { throw new UnsupportedOperatorException(this, "-()"); }
 
-    @Override public final GSLValue operatorBitwiseShiftLeft(GSLValue value) { throw new UnsupportedOperatorException(this, "<<"); }
-    @Override public final GSLValue operatorBitwiseShiftRight(GSLValue value) { throw new UnsupportedOperatorException(this, ">>"); }
-    @Override public final GSLValue operatorBitwiseAnd(GSLValue value) { throw new UnsupportedOperatorException(this, "&"); }
-    @Override public final GSLValue operatorBitwiseOr(GSLValue value) { throw new UnsupportedOperatorException(this, "|"); }
-    @Override public final GSLValue operatorBitwiseXor(GSLValue value) { throw new UnsupportedOperatorException(this, "^"); }
-    @Override public final GSLValue operatorBitwiseNot() { throw new UnsupportedOperatorException(this, "~"); }
+    @Override public final GSLImmutableValue operatorBitwiseShiftLeft(GSLValue value) { throw new UnsupportedOperatorException(this, "<<"); }
+    @Override public final GSLImmutableValue operatorBitwiseShiftRight(GSLValue value) { throw new UnsupportedOperatorException(this, ">>"); }
+    @Override public final GSLImmutableValue operatorBitwiseAnd(GSLValue value) { throw new UnsupportedOperatorException(this, "&"); }
+    @Override public final GSLImmutableValue operatorBitwiseOr(GSLValue value) { throw new UnsupportedOperatorException(this, "|"); }
+    @Override public final GSLImmutableValue operatorBitwiseXor(GSLValue value) { throw new UnsupportedOperatorException(this, "^"); }
+    @Override public final GSLImmutableValue operatorBitwiseNot() { throw new UnsupportedOperatorException(this, "~"); }
 
-    @Override public final GSLValue operatorGet(GSLValue index)
+    @Override public final GSLImmutableValue operatorGet(GSLValue index)
     {
         return new GSLInteger(string.charAt(index.intValue()));
     }
-    @Override public final GSLValue operatorGet(int index)
+    @Override public final GSLImmutableValue operatorGet(int index)
     {
         return new GSLInteger(string.charAt(index));
     }
+    @Override public final GSLImmutableValue operatorPeek() { return new GSLInteger(string.charAt(string.length() - 1)); }
 
     @Override
-    public GSLValue operatorGetProperty(String name)
+    public GSLImmutableValue operatorGetProperty(String name)
     {
         switch(name)
         {
@@ -168,38 +169,38 @@ public final class GSLString extends GSLImmutableValue
     @Override public final int hashCode() { return string.hashCode(); }
     
     
-    private static final GSLValue COMPARE_TO = Def.<GSLString>intMethod((self, args) -> {
+    private static final GSLImmutableValue COMPARE_TO = Def.<GSLString>intMethod((self, args) -> {
         if(args.boolValue1())
             return self.string.compareToIgnoreCase(args.arg0().toString());
         else return self.string.compareTo(args.arg0().toString());
     });
     
-    private static final GSLValue CONTAINS = Def.<GSLString>boolMethod((self, args) -> {
+    private static final GSLImmutableValue CONTAINS = Def.<GSLString>boolMethod((self, args) -> {
         var arg = args.arg0();
         return arg.getGSLDataType().isNumber()
                 ? self.string.contains(Character.toString(arg.charValue()))
                 : self.string.contains(arg.toString());
     });
     
-    private static final GSLValue ENDS = Def.<GSLString>boolMethod((self, args) -> {
+    private static final GSLImmutableValue ENDS = Def.<GSLString>boolMethod((self, args) -> {
         var arg = args.arg0();
         return arg.getGSLDataType().isNumber()
                 ? self.string.endsWith(Character.toString(arg.charValue()))
                 : self.string.endsWith(arg.toString());
     });
     
-    private static final GSLValue STARTS = Def.<GSLString>boolMethod((self, args) -> {
+    private static final GSLImmutableValue STARTS = Def.<GSLString>boolMethod((self, args) -> {
         var arg = args.arg0();
         return arg.getGSLDataType().isNumber()
                 ? self.string.startsWith(Character.toString(arg.charValue()))
                 : self.string.startsWith(arg.toString());
     });
     
-    private static final GSLValue EQUALS_IGNORE_CASE = Def.<GSLString>boolMethod((self, args) -> {
+    private static final GSLImmutableValue EQUALS_IGNORE_CASE = Def.<GSLString>boolMethod((self, args) -> {
         return self.string.equalsIgnoreCase(args.arg0().toString());
     });
     
-    private static final GSLValue BYTES = Def.<GSLString>method((self, args) -> {
+    private static final GSLImmutableValue BYTES = Def.<GSLString>method((self, args) -> {
         var arg = args.arg0();
         try { return arg.boolValue()
                 ? new GSLRawBytes(self.string.getBytes(arg.toString()))
@@ -207,27 +208,27 @@ public final class GSLString extends GSLImmutableValue
         } catch(UnsupportedEncodingException ex) { throw new GSLRuntimeException(ex); }
     });
     
-    private static final GSLValue BLANK = Def.<GSLString>boolMethod((self, args) -> self.string.isBlank());
-    private static final GSLValue EMPTY = Def.<GSLString>boolMethod((self, args) -> self.string.isEmpty());
+    private static final GSLImmutableValue BLANK = Def.<GSLString>boolMethod((self, args) -> self.string.isBlank());
+    private static final GSLImmutableValue EMPTY = Def.<GSLString>boolMethod((self, args) -> self.string.isEmpty());
     
-    private static final GSLValue INDEX_OF = Def.<GSLString>intMethod((self, args) -> {
+    private static final GSLImmutableValue INDEX_OF = Def.<GSLString>intMethod((self, args) -> {
         var arg = args.arg0();
         return arg.getGSLDataType().isNumber()
                 ? self.string.indexOf(arg.charValue())
                 : self.string.indexOf(arg.toString());
     });
-    private static final GSLValue LAST_INDEX_OF = Def.<GSLString>intMethod((self, args) -> {
+    private static final GSLImmutableValue LAST_INDEX_OF = Def.<GSLString>intMethod((self, args) -> {
         var arg = args.arg0();
         return arg.getGSLDataType().isNumber()
                 ? self.string.lastIndexOf(arg.charValue())
                 : self.string.lastIndexOf(arg.toString());
     });
     
-    private static final GSLValue MATCHES = Def.<GSLString>boolMethod((self, args) -> self.string.matches(args.arg0().toString()));
+    private static final GSLImmutableValue MATCHES = Def.<GSLString>boolMethod((self, args) -> self.string.matches(args.arg0().toString()));
     
-    private static final GSLValue REPEAT = Def.<GSLString>stringMethod((self, args) -> self.string.repeat(args.arg0().intValue()));
+    private static final GSLImmutableValue REPEAT = Def.<GSLString>stringMethod((self, args) -> self.string.repeat(args.arg0().intValue()));
     
-    private static final GSLValue REPLACE = Def.<GSLString>stringMethod((self, args) -> {
+    private static final GSLImmutableValue REPLACE = Def.<GSLString>stringMethod((self, args) -> {
         var old_regex = args.arg0();
         var new_replacement = args.arg1();
         if(old_regex.isNumber() && new_replacement.isNumber())
@@ -237,18 +238,18 @@ public final class GSLString extends GSLImmutableValue
                 : self.string.replace(old_regex.toString(), new_replacement.toString());
     });
     
-    private static final GSLValue SPLIT = Def.<GSLString>method((self, args) -> {
+    private static final GSLImmutableValue SPLIT = Def.<GSLString>method((self, args) -> {
         if(args.isArg1Null())
             return valueOf(self.string.split(args.arg0().toString()));
         return valueOf(self.string.split(args.arg0().toString(), args.arg1().intValue()));
     });
     
-    private static final GSLValue STRIP = Def.<GSLString>stringMethod((self, args) -> self.string.strip());
-    private static final GSLValue STRIP_LEADING = Def.<GSLString>stringMethod((self, args) -> self.string.stripLeading());
-    private static final GSLValue STRIP_TRAILING = Def.<GSLString>stringMethod((self, args) -> self.string.stripTrailing());
-    private static final GSLValue TRIM = Def.<GSLString>stringMethod((self, args) -> self.string.trim());
+    private static final GSLImmutableValue STRIP = Def.<GSLString>stringMethod((self, args) -> self.string.strip());
+    private static final GSLImmutableValue STRIP_LEADING = Def.<GSLString>stringMethod((self, args) -> self.string.stripLeading());
+    private static final GSLImmutableValue STRIP_TRAILING = Def.<GSLString>stringMethod((self, args) -> self.string.stripTrailing());
+    private static final GSLImmutableValue TRIM = Def.<GSLString>stringMethod((self, args) -> self.string.trim());
     
-    private static final GSLValue SUB = Def.<GSLString>stringMethod((self, args) -> {
+    private static final GSLImmutableValue SUB = Def.<GSLString>stringMethod((self, args) -> {
         var from = args.arg0();
         var to = args.arg1();
         return to.isNull()
@@ -256,6 +257,6 @@ public final class GSLString extends GSLImmutableValue
                 : self.string.substring(from.intValue(), to.intValue());
     });
     
-    private static final GSLValue UPPER = Def.<GSLString>stringMethod((self, args) -> self.string.toUpperCase());
-    private static final GSLValue LOWER = Def.<GSLString>stringMethod((self, args) -> self.string.toUpperCase());
+    private static final GSLImmutableValue UPPER = Def.<GSLString>stringMethod((self, args) -> self.string.toUpperCase());
+    private static final GSLImmutableValue LOWER = Def.<GSLString>stringMethod((self, args) -> self.string.toUpperCase());
 }

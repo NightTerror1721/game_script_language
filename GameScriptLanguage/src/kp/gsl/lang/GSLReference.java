@@ -150,6 +150,9 @@ public abstract class GSLReference extends GSLValue
     
     @Override
     public final void operatorAdd(GSLValue value) { operatorReferenceGet().operatorAdd(value); }
+    
+    @Override
+    public final GSLValue operatorPeek() { return operatorReferenceGet().operatorPeek(); }
 
     @Override
     public final GSLValue operatorGetProperty(String name) { return operatorReferenceGet().operatorGetProperty(name); }

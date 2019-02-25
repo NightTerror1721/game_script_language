@@ -99,9 +99,10 @@ public class GSLNative extends GSLValue
     @Override public GSLValue operatorBitwiseXor(GSLValue value) { throw new UnsupportedOperatorException(this, "^"); }
     @Override public GSLValue operatorBitwiseNot() { throw new UnsupportedOperatorException(this, "~"); }
 
-    @Override public GSLValue operatorGet(GSLValue index) { throw new UnsupportedOperatorException(this, "[]"); }
+    @Override public GSLValue operatorGet(GSLValue index) { throw new UnsupportedOperatorException(this, "[x]"); }
     @Override public void operatorSet(GSLValue index, GSLValue value) { throw new UnsupportedOperatorException(this, "[x]="); }
     @Override public void operatorAdd(GSLValue value) { throw new UnsupportedOperatorException(this, "[]="); }
+    @Override public GSLValue operatorPeek() { throw new UnsupportedOperatorException(this, "[]"); }
 
     @Override
     public GSLValue operatorGetProperty(String name) { throw new UnsupportedOperatorException(this, "."); }

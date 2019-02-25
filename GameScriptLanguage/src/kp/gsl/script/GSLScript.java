@@ -126,17 +126,19 @@ public final class GSLScript
                 case LIST_NEW: stack[sit++] = new GSLList(); break;
                 case TUPLE_NEW: stack[sit - 1] = new GSLTuple(new GSLValue[stack[sit - 1].intValue()]); break;
                 case MAP_NEW: stack[sit++] = new GSLMap(); break;
-                case STRUCT_NEW: {
-                    var parent = stack[sit - 1];
-                    var props = stack[sit - 2].stream().map(GSLValue::toString).toArray(String[]::new);
-                    stack[--sit] = new GSLStruct(parent == NULL ? null : parent, props);
-                } break;
+                case STRUCT_NEW: stack[sit - 1] = GSLStruct.assimilate(stack[sit - 1].cast()); break;
                 case BLUEPRINT_NEW: {
-                    var parent = stack[sit - 1];
-                    var base = stack[sit - 2];
-                    stack[--sit] = GSLBlueprint.assimilate(base.cast(), parent == NULL ? null : parent);
+                    var base = stack[sit - 1].<AbstractObject>cast();
+                    stack[sit - 1] = GSLBlueprint.assimilate(base, base.getParent());
                 } break;
-                case OBJECT_NEW: stack[sit++] = new GSLObject(); break;
+                case OBJECT_NEW: {
+                    if(code[inst++] != 0)
+                    {
+                        var parent = stack[sit - 1];
+                        stack[sit - 1] = new GSLObject(parent == NULL ? null : parent);
+                    }
+                    else stack[sit++] = new GSLObject();
+                } break;
                 case ITERATOR_NEW: stack[sit -= 2] = new CustomIterator(stack[sit - 1], stack[sit], stack[sit + 1]); break;
                 case BYTES_NEW: stack[sit - 1] = new GSLRawBytes(new byte[stack[sit - 1].intValue()]); break;
                 
@@ -233,6 +235,8 @@ public final class GSLScript
                 case GET_I: stack[sit - 1] = stack[sit - 1].operatorGet(code[inst++] & 0xff); break;
                 case SET: stack[(sit -= 2) - 1].operatorSet(stack[sit], stack[sit + 1]); break;
                 case SET_I: stack[(--sit) - 1].operatorSet(code[inst++] & 0xff, stack[sit]); break;
+                case PEEK: stack[sit - 1] = stack[sit - 1].operatorPeek(); break;
+                case ADD: stack[sit -= 2].operatorAdd(stack[sit + 1]); break;
                 
                 case PROPERTY_GET: stack[sit - 1] = stack[sit - 1].operatorGetProperty(identifiers[code[inst++] & 0xff]); break;
                 case PROPERTY_GET16: stack[sit - 1] = stack[sit - 1].operatorGetProperty(identifiers[(code[inst++] & 0xff) | ((code[inst++] & 0xff) << 8)]); break;

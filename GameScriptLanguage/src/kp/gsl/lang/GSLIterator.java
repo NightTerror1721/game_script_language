@@ -115,9 +115,10 @@ public abstract class GSLIterator extends GSLValue implements Iterator<GSLValue>
     @Override public final GSLValue operatorBitwiseXor(GSLValue value) { throw new UnsupportedOperatorException(this, "^"); }
     @Override public final GSLValue operatorBitwiseNot() { throw new UnsupportedOperatorException(this, "~"); }
 
-    @Override public final GSLValue operatorGet(GSLValue index) { throw new UnsupportedOperatorException(this, "[]"); }
+    @Override public final GSLValue operatorGet(GSLValue index) { throw new UnsupportedOperatorException(this, "[x]"); }
     @Override public final void     operatorSet(GSLValue index, GSLValue value) { throw new UnsupportedOperatorException(this, "[x]="); }
     @Override public final void     operatorAdd(GSLValue value) { throw new UnsupportedOperatorException(this, "[]="); }
+    @Override public final GSLValue operatorPeek() { throw new UnsupportedOperatorException(this, "[]"); }
 
     @Override
     public GSLValue operatorGetProperty(String name)

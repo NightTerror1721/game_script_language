@@ -87,36 +87,37 @@ public final class GSLConstMap extends GSLImmutableValue
     @Override public final GSLRawBytes   operatorCastRawBytes() { return Utils.mapToBytes(table); }
     
 
-    @Override public final GSLValue operatorEquals(GSLValue value) { return equals(value) ? TRUE : FALSE; }
-    @Override public final GSLValue operatorNotEquals(GSLValue value) { return equals(value) ? FALSE : TRUE; }
-    @Override public final GSLValue operatorGreater(GSLValue value) { throw new UnsupportedOperatorException(this, ">"); }
-    @Override public final GSLValue operatorSmaller(GSLValue value) { throw new UnsupportedOperatorException(this, "<"); }
-    @Override public final GSLValue operatorGreaterEquals(GSLValue value) { throw new UnsupportedOperatorException(this, ">="); }
-    @Override public final GSLValue operatorSmallerEquals(GSLValue value) { throw new UnsupportedOperatorException(this, "<="); }
-    @Override public final GSLValue operatorNegate() { return boolValue() ? FALSE : TRUE; }
+    @Override public final GSLImmutableValue operatorEquals(GSLValue value) { return equals(value) ? TRUE : FALSE; }
+    @Override public final GSLImmutableValue operatorNotEquals(GSLValue value) { return equals(value) ? FALSE : TRUE; }
+    @Override public final GSLImmutableValue operatorGreater(GSLValue value) { throw new UnsupportedOperatorException(this, ">"); }
+    @Override public final GSLImmutableValue operatorSmaller(GSLValue value) { throw new UnsupportedOperatorException(this, "<"); }
+    @Override public final GSLImmutableValue operatorGreaterEquals(GSLValue value) { throw new UnsupportedOperatorException(this, ">="); }
+    @Override public final GSLImmutableValue operatorSmallerEquals(GSLValue value) { throw new UnsupportedOperatorException(this, "<="); }
+    @Override public final GSLImmutableValue operatorNegate() { return boolValue() ? FALSE : TRUE; }
     @Override public final int      operatorLength() { return table.size(); }
 
-    @Override public final GSLValue operatorPlus(GSLValue value) { throw new UnsupportedOperatorException(this, "+"); }
-    @Override public final GSLValue operatorMinus(GSLValue value) { throw new UnsupportedOperatorException(this, "-"); }
-    @Override public final GSLValue operatorMultiply(GSLValue value) { throw new UnsupportedOperatorException(this, "*"); }
-    @Override public final GSLValue operatorDivide(GSLValue value) { throw new UnsupportedOperatorException(this, "/"); }
-    @Override public final GSLValue operatorRemainder(GSLValue value) { throw new UnsupportedOperatorException(this, "%"); }
-    @Override public final GSLValue operatorIncrease() { throw new UnsupportedOperatorException(this, "++"); }
-    @Override public final GSLValue operatorDecrease() { throw new UnsupportedOperatorException(this, "--"); }
-    @Override public final GSLValue operatorNegative() { throw new UnsupportedOperatorException(this, "-()"); }
+    @Override public final GSLImmutableValue operatorPlus(GSLValue value) { throw new UnsupportedOperatorException(this, "+"); }
+    @Override public final GSLImmutableValue operatorMinus(GSLValue value) { throw new UnsupportedOperatorException(this, "-"); }
+    @Override public final GSLImmutableValue operatorMultiply(GSLValue value) { throw new UnsupportedOperatorException(this, "*"); }
+    @Override public final GSLImmutableValue operatorDivide(GSLValue value) { throw new UnsupportedOperatorException(this, "/"); }
+    @Override public final GSLImmutableValue operatorRemainder(GSLValue value) { throw new UnsupportedOperatorException(this, "%"); }
+    @Override public final GSLImmutableValue operatorIncrease() { throw new UnsupportedOperatorException(this, "++"); }
+    @Override public final GSLImmutableValue operatorDecrease() { throw new UnsupportedOperatorException(this, "--"); }
+    @Override public final GSLImmutableValue operatorNegative() { throw new UnsupportedOperatorException(this, "-()"); }
 
-    @Override public final GSLValue operatorBitwiseShiftLeft(GSLValue value) { throw new UnsupportedOperatorException(this, "<<"); }
-    @Override public final GSLValue operatorBitwiseShiftRight(GSLValue value) { throw new UnsupportedOperatorException(this, ">>"); }
-    @Override public final GSLValue operatorBitwiseAnd(GSLValue value) { throw new UnsupportedOperatorException(this, "&"); }
-    @Override public final GSLValue operatorBitwiseOr(GSLValue value) { throw new UnsupportedOperatorException(this, "|"); }
-    @Override public final GSLValue operatorBitwiseXor(GSLValue value) { throw new UnsupportedOperatorException(this, "^"); }
-    @Override public final GSLValue operatorBitwiseNot() { throw new UnsupportedOperatorException(this, "~"); }
+    @Override public final GSLImmutableValue operatorBitwiseShiftLeft(GSLValue value) { throw new UnsupportedOperatorException(this, "<<"); }
+    @Override public final GSLImmutableValue operatorBitwiseShiftRight(GSLValue value) { throw new UnsupportedOperatorException(this, ">>"); }
+    @Override public final GSLImmutableValue operatorBitwiseAnd(GSLValue value) { throw new UnsupportedOperatorException(this, "&"); }
+    @Override public final GSLImmutableValue operatorBitwiseOr(GSLValue value) { throw new UnsupportedOperatorException(this, "|"); }
+    @Override public final GSLImmutableValue operatorBitwiseXor(GSLValue value) { throw new UnsupportedOperatorException(this, "^"); }
+    @Override public final GSLImmutableValue operatorBitwiseNot() { throw new UnsupportedOperatorException(this, "~"); }
 
-    @Override public final GSLValue operatorGet(GSLValue index) { return table.getOrDefault(index, NULL); }
-    @Override public final GSLValue operatorGet(int index) { return table.getOrDefault(new GSLInteger(index), NULL); }
+    @Override public final GSLImmutableValue operatorGet(GSLValue index) { return table.getOrDefault(index, NULL); }
+    @Override public final GSLImmutableValue operatorGet(int index) { return table.getOrDefault(new GSLInteger(index), NULL); }
+    @Override public final GSLImmutableValue operatorPeek() { throw new UnsupportedOperatorException(this, "[]"); }
 
     @Override
-    public GSLValue operatorGetProperty(String name)
+    public GSLImmutableValue operatorGetProperty(String name)
     {
         switch(name)
         {
@@ -171,32 +172,32 @@ public final class GSLConstMap extends GSLImmutableValue
     @Override public final int hashCode() { return table.hashCode(); }
     
     
-    private static final GSLValue KEYS = Def.<GSLConstMap>method((self, args) -> {
+    private static final GSLImmutableValue KEYS = Def.<GSLConstMap>method((self, args) -> {
         return new GSLTuple(self.table.keySet().toArray(GSLValue[]::new));
     });
     
-    private static final GSLValue VALUES = Def.<GSLConstMap>method((self, args) -> {
+    private static final GSLImmutableValue VALUES = Def.<GSLConstMap>method((self, args) -> {
         return new GSLTuple(self.table.values().toArray(GSLValue[]::new));
     });
     
-    private static final GSLValue ENTRIES = Def.<GSLConstMap>method((self, args) -> {
+    private static final GSLImmutableValue ENTRIES = Def.<GSLConstMap>method((self, args) -> {
         return new GSLTuple(self.stream().toArray(GSLValue[]::new));
     });
     
-    private static final GSLValue CONTAINS = Def.<GSLConstMap>boolMethod((self, args) -> {
+    private static final GSLImmutableValue CONTAINS = Def.<GSLConstMap>boolMethod((self, args) -> {
         return args.arg0().isMutable() ? false : self.table.containsKey((GSLImmutableValue) args.arg0());
     });
     
-    private static final GSLValue CONTAINS_V = Def.<GSLConstMap>boolMethod((self, args) -> args.arg0().isMutable() ? false : self.table.containsValue((GSLImmutableValue) args.arg0()));
+    private static final GSLImmutableValue CONTAINS_V = Def.<GSLConstMap>boolMethod((self, args) -> args.arg0().isMutable() ? false : self.table.containsValue((GSLImmutableValue) args.arg0()));
     
-    private static final GSLValue GET = Def.<GSLConstMap>method((self, args) -> {
+    private static final GSLImmutableValue GET = Def.<GSLConstMap>method((self, args) -> {
         GSLImmutableValue v;
         if(args.arg0().isMutable())
             return NULL;
         return (v = self.table.get((GSLImmutableValue) args.arg0())) == null ? args.arg1() : v;
     });
     
-    private static final GSLValue EMPTY = Def.<GSLConstMap>boolMethod((self, args) -> self.table.isEmpty());
+    private static final GSLImmutableValue EMPTY = Def.<GSLConstMap>boolMethod((self, args) -> self.table.isEmpty());
     
-    private static final GSLValue SIZE = Def.<GSLConstMap>intMethod((self, args) -> self.table.size());
+    private static final GSLImmutableValue SIZE = Def.<GSLConstMap>intMethod((self, args) -> self.table.size());
 }

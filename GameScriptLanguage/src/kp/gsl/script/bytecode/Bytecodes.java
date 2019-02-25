@@ -133,7 +133,8 @@ public interface Bytecodes
     Bytecode MAP_NEW = new MAP_NEW();
     Bytecode STRUCT_NEW = new STRUCT_NEW();
     Bytecode BLUEPRINT_NEW = new BLUEPRINT_NEW();
-    Bytecode OBJECT_NEW = new OBJECT_NEW();
+    Bytecode OBJECT_NEW = new OBJECT_NEW(0);
+    Bytecode OBJECT_NEW_PARENT = new OBJECT_NEW(1);
     Bytecode ITERATOR_NEW = new ITERATOR_NEW();
     Bytecode BYTES_NEW = new BYTES_NEW();
     
@@ -189,6 +190,7 @@ public interface Bytecodes
     Bytecode DUP2 = new DUP2();
     
     static Bytecode goTo(int instIdx) { return new GOTO(instIdx); }
+    static Bytecode goTo() { return new GOTO(0); }
     
     Bytecode RETURN = new RETURN();
     static Bytecode Return(GSLDataType type) { return type == null ? RETURN : new RETURN_T(type); }

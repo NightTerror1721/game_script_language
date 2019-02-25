@@ -48,9 +48,9 @@ public interface Instruction
     int LIST_NEW        = 0x1F; // [0] => [+1]
     int TUPLE_NEW       = 0x20; // [-1] => [+1]
     int MAP_NEW         = 0x21; // [0] => [+1]
-    int STRUCT_NEW      = 0x22; // [-2] => [+1]
-    int BLUEPRINT_NEW   = 0x23; // [-2] => [+1]
-    int OBJECT_NEW      = 0x24; // [0] => [+1]
+    int STRUCT_NEW      = 0x22; // [-1] => [+1]
+    int BLUEPRINT_NEW   = 0x23; // [-1] => [+1]
+    int OBJECT_NEW      = 0x24; // [bool_has_parent ? -1 : 0] => [+1] <bool_has_parent>
     int ITERATOR_NEW    = 0x25; // [-2] => [+1]
     int BYTES_NEW       = 0x26; // [-1] => [+1]
     
@@ -139,97 +139,98 @@ public interface Instruction
     int GET_I           = 0x71; // [-1] => [+1] <local_value>
     int SET             = 0x72; // [-3] => [0]
     int SET_I           = 0x73; // [-2] => [0] <local_value>
-    int ADD             = 0x74; // [-2] => [0]
+    int PEEK            = 0x74; // [-1] => [1]
+    int ADD             = 0x75; // [-2] => [0]
     
-    int PROPERTY_GET    = 0x75; // [-1] => [+1] <identifier_idx>
-    int PROPERTY_GET16  = 0x76; // [-1] => [+1] <identifier_idx|0-7> <identifier_idx|8-15>
-    int PROPERTY_SET    = 0x77; // [-2] => [0] <identifier_idx>
-    int PROPERTY_SET16  = 0x78; // [-2] => [0] <identifier_idx|0-7> <identifier_idx|8-15>
+    int PROPERTY_GET    = 0x76; // [-1] => [+1] <identifier_idx>
+    int PROPERTY_GET16  = 0x77; // [-1] => [+1] <identifier_idx|0-7> <identifier_idx|8-15>
+    int PROPERTY_SET    = 0x78; // [-2] => [0] <identifier_idx>
+    int PROPERTY_SET16  = 0x79; // [-2] => [0] <identifier_idx|0-7> <identifier_idx|8-15>
     
-    int IF              = 0x79; // [-1] => [0] <instruction_idx> <IGNORED>
-    int IF16            = 0x7A; // [-1] => [0] <instruction_idx|0-7> <instruction_idx|8-15>
+    int IF              = 0x7A; // [-1] => [0] <instruction_idx> <IGNORED>
+    int IF16            = 0x7B; // [-1] => [0] <instruction_idx|0-7> <instruction_idx|8-15>
     
-    int IF_EQ           = 0x7B; // [-2] => [0] <instruction_idx> <IGNORED>
-    int IF_EQ16         = 0x7C; // [-2] => [0] <instruction_idx|0-7> <instruction_idx|8-15>
-    int IF_NOEQ         = 0x7D; // [-2] => [0] <instruction_idx> <IGNORED>
-    int IF_NOEQ16       = 0x7E; // [-2] => [0] <instruction_idx|0-7> <instruction_idx|8-15>
-    int IF_T_EQ         = 0x7F; // [-2] => [0] <instruction_idx> <IGNORED>
-    int IF_T_EQ16       = 0x80; // [-2] => [0] <instruction_idx|0-7> <instruction_idx|8-15>
-    int IF_TNEQ         = 0x81; // [-2] => [0] <instruction_idx> <IGNORED>
-    int IF_TNEQ16       = 0x82; // [-2] => [0] <instruction_idx|0-7> <instruction_idx|8-15>
-    int IF_GR           = 0x83; // [-2] => [0] <instruction_idx> <IGNORED>
-    int IF_GR16         = 0x84; // [-2] => [0] <instruction_idx|0-7> <instruction_idx|8-15>
-    int IF_SM           = 0x85; // [-2] => [0] <instruction_idx> <IGNORED>
-    int IF_SM16         = 0x86; // [-2] => [0] <instruction_idx|0-7> <instruction_idx|8-15>
-    int IF_GREQ         = 0x87; // [-2] => [0] <instruction_idx> <IGNORED>
-    int IF_GREQ16       = 0x88; // [-2] => [0] <instruction_idx|0-7> <instruction_idx|8-15>
-    int IF_SMEQ         = 0x89; // [-2] => [0] <instruction_idx> <IGNORED>
-    int IF_SMEQ16       = 0x8A; // [-2] => [0] <instruction_idx|0-7> <instruction_idx|8-15>
-    int IF_NOT          = 0x8B; // [-1] => [0] <instruction_idx> <IGNORED>
-    int IF_NOT16        = 0x8C; // [-1] => [0] <instruction_idx|0-7> <instruction_idx|8-15>
+    int IF_EQ           = 0x7C; // [-2] => [0] <instruction_idx> <IGNORED>
+    int IF_EQ16         = 0x7D; // [-2] => [0] <instruction_idx|0-7> <instruction_idx|8-15>
+    int IF_NOEQ         = 0x7E; // [-2] => [0] <instruction_idx> <IGNORED>
+    int IF_NOEQ16       = 0x7F; // [-2] => [0] <instruction_idx|0-7> <instruction_idx|8-15>
+    int IF_T_EQ         = 0x80; // [-2] => [0] <instruction_idx> <IGNORED>
+    int IF_T_EQ16       = 0x81; // [-2] => [0] <instruction_idx|0-7> <instruction_idx|8-15>
+    int IF_TNEQ         = 0x82; // [-2] => [0] <instruction_idx> <IGNORED>
+    int IF_TNEQ16       = 0x83; // [-2] => [0] <instruction_idx|0-7> <instruction_idx|8-15>
+    int IF_GR           = 0x84; // [-2] => [0] <instruction_idx> <IGNORED>
+    int IF_GR16         = 0x85; // [-2] => [0] <instruction_idx|0-7> <instruction_idx|8-15>
+    int IF_SM           = 0x86; // [-2] => [0] <instruction_idx> <IGNORED>
+    int IF_SM16         = 0x87; // [-2] => [0] <instruction_idx|0-7> <instruction_idx|8-15>
+    int IF_GREQ         = 0x88; // [-2] => [0] <instruction_idx> <IGNORED>
+    int IF_GREQ16       = 0x89; // [-2] => [0] <instruction_idx|0-7> <instruction_idx|8-15>
+    int IF_SMEQ         = 0x8A; // [-2] => [0] <instruction_idx> <IGNORED>
+    int IF_SMEQ16       = 0x8B; // [-2] => [0] <instruction_idx|0-7> <instruction_idx|8-15>
+    int IF_NOT          = 0x8C; // [-1] => [0] <instruction_idx> <IGNORED>
+    int IF_NOT16        = 0x8D; // [-1] => [0] <instruction_idx|0-7> <instruction_idx|8-15>
     
-    int IF_DEF          = 0x8D; // [-1] => [0] <instruction_idx> <IGNORED>
-    int IF_DEF16        = 0x8E; // [-1] => [0] <instruction_idx|0-7> <instruction_idx|8-15>
-    int IF_UNDEF        = 0x8F; // [-1] => [0] <instruction_idx> <IGNORED>
-    int IF_UNDEF16      = 0x90; // [-1] => [0] <instruction_idx|0-7> <instruction_idx|8-15>
+    int IF_DEF          = 0x8E; // [-1] => [0] <instruction_idx> <IGNORED>
+    int IF_DEF16        = 0x8F; // [-1] => [0] <instruction_idx|0-7> <instruction_idx|8-15>
+    int IF_UNDEF        = 0x90; // [-1] => [0] <instruction_idx> <IGNORED>
+    int IF_UNDEF16      = 0x91; // [-1] => [0] <instruction_idx|0-7> <instruction_idx|8-15>
     
-    int LOCAL_CALL      = 0x91; // [-?>=0] => [+1] <args_len> <func_idx>
-    int LOCAL_CALL16    = 0x92; // [-?>=0] => [+1] <args_len> <func_idx|0-7> <func_idx|8-15>
-    int LOCAL_VCALL     = 0x93; // [-?>=0] => [0] <args_len> <func_idx>
-    int LOCAL_VCALL16   = 0x94; // [-?>=0] => [0] <args_len> <func_idx|0-7> <func_idx|8-15>
+    int LOCAL_CALL      = 0x92; // [-?>=0] => [+1] <args_len> <func_idx>
+    int LOCAL_CALL16    = 0x93; // [-?>=0] => [+1] <args_len> <func_idx|0-7> <func_idx|8-15>
+    int LOCAL_VCALL     = 0x94; // [-?>=0] => [0] <args_len> <func_idx>
+    int LOCAL_VCALL16   = 0x95; // [-?>=0] => [0] <args_len> <func_idx|0-7> <func_idx|8-15>
     
-    int CALL            = 0x95; // [-?>=1] => [+1] <args_len>
-    int VCALL           = 0x96; // [-?>=1] => [0] <args_len>
+    int CALL            = 0x96; // [-?>=1] => [+1] <args_len>
+    int VCALL           = 0x97; // [-?>=1] => [0] <args_len>
     
-    int INVOKE          = 0x97; // [-?>=1] => [+1] <args_len> <identifier_idx>
-    int INVOKE16        = 0x98; // [-?>=1] => [+1] <args_len> <identifier_idx|0-7> <identifier_idx|8-15>
-    int VINVOKE         = 0x99; // [-?>=1] => [0] <args_len> <identifier_idx>
-    int VINVOKE16       = 0x9A; // [-?>=1] => [0] <args_len> <identifier_idx|0-7> <identifier_idx|8-15>
+    int INVOKE          = 0x98; // [-?>=1] => [+1] <args_len> <identifier_idx>
+    int INVOKE16        = 0x99; // [-?>=1] => [+1] <args_len> <identifier_idx|0-7> <identifier_idx|8-15>
+    int VINVOKE         = 0x9A; // [-?>=1] => [0] <args_len> <identifier_idx>
+    int VINVOKE16       = 0x9B; // [-?>=1] => [0] <args_len> <identifier_idx|0-7> <identifier_idx|8-15>
     
-    int LIBE_LOAD       = 0x9B; // [0] => [+1] <libelement_idx>
-    int LIBE_LOAD16     = 0x9C; // [0] => [+1] <libelement_idx|0-7> <libelement_idx|8-15>
-    int LIBE_GET        = 0x9D; // [-1] => [+1] <libelement_idx>
-    int LIBE_GET16      = 0x9E; // [-1] => [+1] <libelement_idx|0-7> <libelement_idx|8-15>
-    int LIBE_GET_I      = 0x9F; // [0] => [+1] <libelement_idx> <local_value>
-    int LIBE_GET_I16    = 0xA0; // [0] => [+1] <libelement_idx|0-7> <libelement_idx|8-15> <local_value>
-    int LIBE_P_GET      = 0xA1; // [0] => [+1] <libelement_idx> <identifier_idx>
-    int LIBE_P16_GET    = 0xA2; // [0] => [+1] <libelement_idx> <identifier_idx|0-7> <identifier_idx|8-15>
-    int LIBE_P_GET16    = 0xA3; // [0] => [+1] <libelement_idx|0-7> <libelement_idx|8-15> <identifier_idx>
-    int LIBE_P16_GET16  = 0xA4; // [0] => [+1] <libelement_idx|0-7> <libelement_idx|8-15> <identifier_idx|0-7> <identifier_idx|8-15>
-    int LIBE_CALL       = 0xA5; // [-?>=0] => [+1] <args_len> <libelement_idx>
-    int LIBE_CALL16     = 0xA6; // [-?>=0] => [+1] <args_len> <libelement_idx|0-7> <libelement_idx|8-15>
-    int LIBE_VCALL      = 0xA7; // [-?>=0] => [0] <args_len> <libelement_idx>
-    int LIBE_VCALL16    = 0xA8; // [-?>=0] => [0] <args_len> <libelement_idx|0-7> <libelement_idx|8-15>
-    int LIBE_NEW        = 0xA9; // [-?>=0] => [+1] <args_len> <libelement_idx>
-    int LIBE_NEW16      = 0xAA; // [-?>=0] => [+1] <args_len> <libelement_idx|0-7> <libelement_idx|8-15>
-    int LIBE_VNEW       = 0xAB; // [-?>=0] => [0] <args_len> <libelement_idx>
-    int LIBE_VNEW16     = 0xAC; // [-?>=0] => [0] <args_len> <libelement_idx|0-7> <libelement_idx|8-15>
+    int LIBE_LOAD       = 0x9C; // [0] => [+1] <libelement_idx>
+    int LIBE_LOAD16     = 0x9D; // [0] => [+1] <libelement_idx|0-7> <libelement_idx|8-15>
+    int LIBE_GET        = 0x9E; // [-1] => [+1] <libelement_idx>
+    int LIBE_GET16      = 0x9F; // [-1] => [+1] <libelement_idx|0-7> <libelement_idx|8-15>
+    int LIBE_GET_I      = 0xA0; // [0] => [+1] <libelement_idx> <local_value>
+    int LIBE_GET_I16    = 0xA1; // [0] => [+1] <libelement_idx|0-7> <libelement_idx|8-15> <local_value>
+    int LIBE_P_GET      = 0xA2; // [0] => [+1] <libelement_idx> <identifier_idx>
+    int LIBE_P16_GET    = 0xA3; // [0] => [+1] <libelement_idx> <identifier_idx|0-7> <identifier_idx|8-15>
+    int LIBE_P_GET16    = 0xA4; // [0] => [+1] <libelement_idx|0-7> <libelement_idx|8-15> <identifier_idx>
+    int LIBE_P16_GET16  = 0xA5; // [0] => [+1] <libelement_idx|0-7> <libelement_idx|8-15> <identifier_idx|0-7> <identifier_idx|8-15>
+    int LIBE_CALL       = 0xA6; // [-?>=0] => [+1] <args_len> <libelement_idx>
+    int LIBE_CALL16     = 0xA7; // [-?>=0] => [+1] <args_len> <libelement_idx|0-7> <libelement_idx|8-15>
+    int LIBE_VCALL      = 0xA8; // [-?>=0] => [0] <args_len> <libelement_idx>
+    int LIBE_VCALL16    = 0xA9; // [-?>=0] => [0] <args_len> <libelement_idx|0-7> <libelement_idx|8-15>
+    int LIBE_NEW        = 0xAA; // [-?>=0] => [+1] <args_len> <libelement_idx>
+    int LIBE_NEW16      = 0xAB; // [-?>=0] => [+1] <args_len> <libelement_idx|0-7> <libelement_idx|8-15>
+    int LIBE_VNEW       = 0xAC; // [-?>=0] => [0] <args_len> <libelement_idx>
+    int LIBE_VNEW16     = 0xAD; // [-?>=0] => [0] <args_len> <libelement_idx|0-7> <libelement_idx|8-15>
     
-    int ARGS_TO_ARRAY   = 0xAD; // [0] => [0] <var_idx> <offset_idx>
-    int ARG_TO_VAR      = 0xAE; // [0] => [+1] <var_idx> <arg_idx>
+    int ARGS_TO_ARRAY   = 0xAE; // [0] => [0] <var_idx> <offset_idx>
+    int ARG_TO_VAR      = 0xAF; // [0] => [+1] <var_idx> <arg_idx>
     
-    int NEW             = 0xAF; // [-?>=0] => [+1] <args_len>
-    int VNEW            = 0xB0; // [-?>=0] => [0] <args_len>
-    int SELF            = 0xB1; // [0] => [+1]
-    int CLASS           = 0xB2; // [-1] => [+1]
-    int BASE            = 0xB3; // [-1] => [+1]
+    int NEW             = 0xB0; // [-?>=0] => [+1] <args_len>
+    int VNEW            = 0xB1; // [-?>=0] => [0] <args_len>
+    int SELF            = 0xB2; // [0] => [+1]
+    int CLASS           = 0xB3; // [-1] => [+1]
+    int BASE            = 0xB4; // [-1] => [+1]
     
-    int YIELD           = 0xB4; // [-1] => [0]
-    int YIELD_NULL      = 0xB5; // [0] => [0]
-    int YIELD_INT       = 0xB6; // [-1] => [0]
-    int YIELD_FLOAT     = 0xB7; // [-1] => [0]
-    int YIELD_BOOL      = 0xB8; // [-1] => [0]
-    int YIELD_STRING    = 0xB9; // [-1] => [0]
-    int YIELD_CTUPLE    = 0xBA; // [-1] => [0]
-    int YIELD_CMAP      = 0xBB; // [-1] => [0]
-    int YIELD_FUNCTION  = 0xBC; // [-1] => [0]
-    int YIELD_LIST      = 0xBD; // [-1] => [0]
-    int YIELD_TUPLE     = 0xBE; // [-1] => [0]
-    int YIELD_MAP       = 0xBF; // [-1] => [0]
-    int YIELD_STRUCT    = 0xC0; // [-1] => [0]
-    int YIELD_BPRINT    = 0xC1; // [-1] => [0]
-    int YIELD_OBJECT    = 0xC2; // [-1] => [0]
-    int YIELD_ITERATOR  = 0xC3; // [-1] => [0]
-    int YIELD_BYTES     = 0xC4; // [-1] => [0]
-    int YIELD_NATIVE    = 0xC5; // [-1] => [0]
+    int YIELD           = 0xB5; // [-1] => [0]
+    int YIELD_NULL      = 0xB6; // [0] => [0]
+    int YIELD_INT       = 0xB7; // [-1] => [0]
+    int YIELD_FLOAT     = 0xB8; // [-1] => [0]
+    int YIELD_BOOL      = 0xB9; // [-1] => [0]
+    int YIELD_STRING    = 0xBA; // [-1] => [0]
+    int YIELD_CTUPLE    = 0xBB; // [-1] => [0]
+    int YIELD_CMAP      = 0xBC; // [-1] => [0]
+    int YIELD_FUNCTION  = 0xBD; // [-1] => [0]
+    int YIELD_LIST      = 0xBE; // [-1] => [0]
+    int YIELD_TUPLE     = 0xBF; // [-1] => [0]
+    int YIELD_MAP       = 0xC0; // [-1] => [0]
+    int YIELD_STRUCT    = 0xC1; // [-1] => [0]
+    int YIELD_BPRINT    = 0xC2; // [-1] => [0]
+    int YIELD_OBJECT    = 0xC3; // [-1] => [0]
+    int YIELD_ITERATOR  = 0xC4; // [-1] => [0]
+    int YIELD_BYTES     = 0xC5; // [-1] => [0]
+    int YIELD_NATIVE    = 0xC6; // [-1] => [0]
 }

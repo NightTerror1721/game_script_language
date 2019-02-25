@@ -82,35 +82,36 @@ public final class GSLInteger extends GSLImmutableValue
     }
     
 
-    @Override public final GSLValue operatorEquals(GSLValue value) { return number == value.doubleValue() ? TRUE : FALSE; }
-    @Override public final GSLValue operatorNotEquals(GSLValue value) { return number != value.doubleValue() ? TRUE : FALSE; }
-    @Override public final GSLValue operatorGreater(GSLValue value) { return number > value.doubleValue() ? TRUE : FALSE; }
-    @Override public final GSLValue operatorSmaller(GSLValue value) { return number < value.doubleValue() ? TRUE : FALSE; }
-    @Override public final GSLValue operatorGreaterEquals(GSLValue value) { return number >= value.doubleValue() ? TRUE : FALSE; }
-    @Override public final GSLValue operatorSmallerEquals(GSLValue value) { return number <= value.doubleValue() ? TRUE : FALSE; }
-    @Override public final GSLValue operatorNegate() { return number == 0 ? TRUE : FALSE; }
+    @Override public final GSLImmutableValue operatorEquals(GSLValue value) { return number == value.doubleValue() ? TRUE : FALSE; }
+    @Override public final GSLImmutableValue operatorNotEquals(GSLValue value) { return number != value.doubleValue() ? TRUE : FALSE; }
+    @Override public final GSLImmutableValue operatorGreater(GSLValue value) { return number > value.doubleValue() ? TRUE : FALSE; }
+    @Override public final GSLImmutableValue operatorSmaller(GSLValue value) { return number < value.doubleValue() ? TRUE : FALSE; }
+    @Override public final GSLImmutableValue operatorGreaterEquals(GSLValue value) { return number >= value.doubleValue() ? TRUE : FALSE; }
+    @Override public final GSLImmutableValue operatorSmallerEquals(GSLValue value) { return number <= value.doubleValue() ? TRUE : FALSE; }
+    @Override public final GSLImmutableValue operatorNegate() { return number == 0 ? TRUE : FALSE; }
     @Override public final int      operatorLength() { return 1; }
 
-    @Override public final GSLValue operatorPlus(GSLValue value) { return new GSLFloat(number + value.doubleValue()); }
-    @Override public final GSLValue operatorMinus(GSLValue value) { return new GSLFloat(number - value.doubleValue()); }
-    @Override public final GSLValue operatorMultiply(GSLValue value) { return new GSLFloat(number * value.doubleValue()); }
-    @Override public final GSLValue operatorDivide(GSLValue value) { return new GSLFloat(number / value.doubleValue()); }
-    @Override public final GSLValue operatorRemainder(GSLValue value) { return new GSLInteger(number % value.longValue()); }
-    @Override public final GSLValue operatorIncrease() { return new GSLInteger(number + 1); }
-    @Override public final GSLValue operatorDecrease() { return new GSLInteger(number - 1); }
-    @Override public final GSLValue operatorNegative() { return new GSLInteger(-number); }
+    @Override public final GSLImmutableValue operatorPlus(GSLValue value) { return new GSLFloat(number + value.doubleValue()); }
+    @Override public final GSLImmutableValue operatorMinus(GSLValue value) { return new GSLFloat(number - value.doubleValue()); }
+    @Override public final GSLImmutableValue operatorMultiply(GSLValue value) { return new GSLFloat(number * value.doubleValue()); }
+    @Override public final GSLImmutableValue operatorDivide(GSLValue value) { return new GSLFloat(number / value.doubleValue()); }
+    @Override public final GSLImmutableValue operatorRemainder(GSLValue value) { return new GSLInteger(number % value.longValue()); }
+    @Override public final GSLImmutableValue operatorIncrease() { return new GSLInteger(number + 1); }
+    @Override public final GSLImmutableValue operatorDecrease() { return new GSLInteger(number - 1); }
+    @Override public final GSLImmutableValue operatorNegative() { return new GSLInteger(-number); }
 
-    @Override public final GSLValue operatorBitwiseShiftLeft(GSLValue value) { return new GSLInteger(number >> value.longValue()); }
-    @Override public final GSLValue operatorBitwiseShiftRight(GSLValue value) { return new GSLInteger(number << value.longValue()); }
-    @Override public final GSLValue operatorBitwiseAnd(GSLValue value) { return new GSLInteger(number & value.longValue()); }
-    @Override public final GSLValue operatorBitwiseOr(GSLValue value) { return new GSLInteger(number | value.longValue()); }
-    @Override public final GSLValue operatorBitwiseXor(GSLValue value) { return new GSLInteger(number ^ value.longValue()); }
-    @Override public final GSLValue operatorBitwiseNot() { return new GSLInteger(~number); }
+    @Override public final GSLImmutableValue operatorBitwiseShiftLeft(GSLValue value) { return new GSLInteger(number >> value.longValue()); }
+    @Override public final GSLImmutableValue operatorBitwiseShiftRight(GSLValue value) { return new GSLInteger(number << value.longValue()); }
+    @Override public final GSLImmutableValue operatorBitwiseAnd(GSLValue value) { return new GSLInteger(number & value.longValue()); }
+    @Override public final GSLImmutableValue operatorBitwiseOr(GSLValue value) { return new GSLInteger(number | value.longValue()); }
+    @Override public final GSLImmutableValue operatorBitwiseXor(GSLValue value) { return new GSLInteger(number ^ value.longValue()); }
+    @Override public final GSLImmutableValue operatorBitwiseNot() { return new GSLInteger(~number); }
 
-    @Override public final GSLValue operatorGet(GSLValue index) { throw new UnsupportedOperatorException(this, "[]"); }
+    @Override public final GSLImmutableValue operatorGet(GSLValue index) { throw new UnsupportedOperatorException(this, "[x]"); }
+    @Override public final GSLImmutableValue operatorPeek() { throw new UnsupportedOperatorException(this, "[]"); }
 
     @Override
-    public GSLValue operatorGetProperty(String name)
+    public GSLImmutableValue operatorGetProperty(String name)
     {
         switch(name)
         {

@@ -17,27 +17,34 @@ import kp.gsl.lang.AbstractObject.Property;
  *
  * @author Asus
  */
-public final class GSLStruct extends AbstractObject<LinkedHashMap<String, Property>>
+public final class GSLStruct extends AbstractObject
 {
     public GSLStruct(GSLValue parent, String... fields)
     {
         super(Stream.of(fields).collect(Utils.linkedHashMapCollector(Function.identity(), Property::new)), parent);
     }
-    public GSLStruct(GSLValue parent, Map<?, GSLValue> map)
+    /*public GSLStruct(GSLValue parent, Map<?, GSLValue> map)
     {
         super(map.entrySet().stream().collect(Utils.linkedHashMapCollector(
                 e -> e.getKey().toString(),
                 e -> new Property(e.getKey().toString(), e.getValue().boolValue()))), parent);
-    }
-    public GSLStruct(GSLValue parent, LinkedHashMap<String, Property> structMap)
+    }*/
+    public GSLStruct(GSLValue parent, Map<String, Property> structMap)
     {
         super(structMap.values().stream().collect(Utils.linkedHashMapCollector(Property::getName, Property::copy)), parent);
     }
     public GSLStruct(GSLStruct struct) { this(struct.parent, struct.props); }
     
     public GSLStruct(String... fields) { this(null, fields); }
-    public GSLStruct(Map<?, GSLValue> map) { this(null, map); }
+    //public GSLStruct(Map<?, GSLValue> map) { this(null, map); }
     public GSLStruct(LinkedHashMap<String, Property> structMap) { this(null, structMap); }
+    
+    private GSLStruct(AbstractObject model) { super(model.props, model.parent); }
+    
+    public static final GSLStruct assimilate(AbstractObject obj)
+    {
+        return new GSLStruct(obj);
+    }
     
     @Override
     public final GSLDataType getGSLDataType() { return GSLDataType.STRUCT; }

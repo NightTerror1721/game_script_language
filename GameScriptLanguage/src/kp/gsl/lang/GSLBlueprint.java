@@ -14,7 +14,7 @@ import kp.gsl.lang.AbstractObject.Property;
  *
  * @author Asus
  */
-public final class GSLBlueprint extends AbstractObject<Map<String, Property>>
+public final class GSLBlueprint extends AbstractObject
 {
     public GSLBlueprint(Map<String, Property> props, GSLValue parent)
     {

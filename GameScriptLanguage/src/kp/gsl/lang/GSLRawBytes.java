@@ -151,6 +151,7 @@ public class GSLRawBytes extends GSLValue
         bytes[index] = (byte) value.intValue();
     }
     @Override public final void     operatorAdd(GSLValue value) { throw new UnsupportedOperatorException(this, "[]="); }
+    @Override public final GSLValue operatorPeek() { throw new UnsupportedOperatorException(this, "[]"); }
 
     @Override
     public GSLValue operatorGetProperty(String name)

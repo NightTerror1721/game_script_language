@@ -11,7 +11,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
-import kp.gsl.exception.GSLRuntimeException;
 import kp.gsl.exception.NotPointerException;
 import kp.gsl.exception.UnsupportedOperatorException;
 import kp.gsl.lib.Def;
@@ -135,13 +134,8 @@ public final class GSLMap extends GSLValue
     @Override public final GSLValue operatorGet(int index) { return map.getOrDefault(new GSLInteger(index), NULL); }
     @Override public final void operatorSet(GSLValue index, GSLValue value) { map.put(index, value); }
     @Override public final void operatorSet(int index, GSLValue value) { map.put(new GSLInteger(index), value); }
-    @Override public final void operatorAdd(GSLValue value)
-    {
-        var all = value.toArray();
-        if(all.length < 2)
-            throw new GSLRuntimeException("Required a <key, value> pair to add in map");
-        map.put(all[0], all[1]);
-    }
+    @Override public final void operatorAdd(GSLValue value) { throw new UnsupportedOperatorException(this, "[]="); }
+    @Override public final GSLValue operatorPeek() { throw new UnsupportedOperatorException(this, "[]"); }
 
     @Override
     public GSLValue operatorGetProperty(String name)

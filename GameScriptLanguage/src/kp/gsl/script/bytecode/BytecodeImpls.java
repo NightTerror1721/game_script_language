@@ -182,21 +182,24 @@ public interface BytecodeImpls
     class STRUCT_NEW extends NoParsBytecode
     {
         @Override protected byte inst() { return Instruction.STRUCT_NEW; }
-        @Override protected int stack(boolean pars) { return pars ? 2 : 1; }
+        @Override protected int stack(boolean pars) { return pars ? 1 : 1; }
         @Override public String getName() { return "STRUCT_NEW"; }
     }
     
     class BLUEPRINT_NEW extends NoParsBytecode
     {
         @Override protected byte inst() { return Instruction.BLUEPRINT_NEW; }
-        @Override protected int stack(boolean pars) { return pars ? 2 : 1; }
+        @Override protected int stack(boolean pars) { return pars ? 1 : 1; }
         @Override public String getName() { return "BLUEPRINT_NEW"; }
     }
     
-    class OBJECT_NEW extends NoParsBytecode
+    class OBJECT_NEW extends OneByteBytecode
     {
+        public OBJECT_NEW(int argsCount) { super(argsCount); }
+        public OBJECT_NEW(byte b0) { super(b0); }
+        
         @Override protected byte inst() { return Instruction.OBJECT_NEW; }
-        @Override protected int stack(boolean pars) { return pars ? 0 : 1; }
+        @Override protected int stack(boolean pars) { return pars ? (b0.getValue() != 0 ? 1 : 0) : 1; }
         @Override public String getName() { return "OBJECT_NEW"; }
     }
     

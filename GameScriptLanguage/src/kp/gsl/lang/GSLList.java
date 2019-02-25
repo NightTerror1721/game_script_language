@@ -150,6 +150,10 @@ public final class GSLList extends GSLValue
     {
         list.add(value);
     }
+    @Override public final GSLValue operatorPeek()
+    {
+        return list.get(list.size() - 1);
+    }
 
     @Override
     public GSLValue operatorGetProperty(String name)
